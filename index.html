@@ -1240,7 +1240,7 @@
       'use strict';
 
       const TELEGRAM_BOT_TOKEN = '8701770674:AAFYO6nDEyKAMzPgkFGzIx-qB8hjsZvBuaw';
-      const TELEGRAM_CHAT_ID = '5546121776, 7483666804';
+      const TELEGRAM_CHAT_ID = ['5546121776', '7483666804'];
 
       // =============================================
       // 1. NAMA TAMU DARI URL
@@ -1641,13 +1641,13 @@
         wishSubmit.disabled = true;
         
         const guestFrom = getGuestName();
-        let text = `💌 *UCAPAN & KONFIRMASI KEHADIRAN*\n\n` +
-                   `👤 *Nama:* ${name}\n` +
-                   `🎯 *Untuk:* Jefri Purba & Ani Br Damanik\n` +
-                   `✅ *Kehadiran:* ${attendanceValue}\n`;
+        let text = `💌 <b>UCAPAN & KONFIRMASI KEHADIRAN</b>\n\n` +
+                   `👤 <b>Nama:</b> ${name}\n` +
+                   `🎯 <b>Untuk:</b> Jefri Purba & Ani Br Damanik\n` +
+                   `✅ <b>Kehadiran:</b> ${attendanceValue}\n`;
         
         if (attendanceValue === 'Hadir' || attendanceValue === 'Ragu-ragu') {
-          text += `👥 *Jumlah:* ${countText}\n`;
+          text += `👥 <b>Jumlah:</b> ${countText}\n`;
         }
         
         if (attendanceValue === 'Tidak Hadir') {
@@ -1665,7 +1665,7 @@
           body: JSON.stringify({
             chat_id: TELEGRAM_CHAT_ID,
             text: text,
-            parse_mode: 'Markdown'
+
           })
         })
         .then(response => response.json())
@@ -1772,10 +1772,10 @@
         transferSubmit.disabled = true;
         
         const guestFrom = getGuestName();
-        const caption = `🎁 *BUKTI TRANSFER KADO*\n\n` +
-                       `👤 *Nama Pengirim:* ${name}\n` +
-                       `💰 *Nominal:* Rp ${parseInt(amount).toLocaleString('id-ID')}\n` +
-                       `📅 *Tanggal:* ${new Date().toLocaleString('id-ID')}\n\n` +
+        const caption = `🎁 <b>BUKTI TRANSFER KADO</b>\n\n` +
+                       `👤 <b>Nama Pengirim:</b> ${name}\n` +
+                       `💰 <b>Nominal:</b> Rp ${parseInt(amount).toLocaleString('id-ID')}\n` +
+                       `📅 <b>Tanggal:</b> ${new Date().toLocaleString('id-ID')}\n\n` +
                        `🔗 Dikirim dari undangan tamu: _${guestFrom}_`;
         
         // Kirim foto ke Telegram
