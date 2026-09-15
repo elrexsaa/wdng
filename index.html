@@ -147,8 +147,15 @@
       inset: 0;
       z-index: 100;
       transition: opacity 1s ease, visibility 1s ease;
-      overflow: hidden;
+      /* FIX: overflow-y auto agar konten cover (termasuk nama tamu) bisa discroll
+         kalau tingginya melebihi layar (nama tamu panjang, layar pendek, dll) */
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
+    #cover-page::-webkit-scrollbar { display: none; }
     #cover-page.hidden-cover {
       opacity: 0;
       visibility: hidden;
@@ -523,9 +530,103 @@
       background: rgba(45, 27, 19, 0.85);
       backdrop-filter: blur(8px);
     }
+
+    /* === SCROLL PROGRESS BAR === */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #8B3A3A, #C49A6C);
+      z-index: 60;
+      transition: width 0.15s ease-out;
+      box-shadow: 0 0 8px rgba(196, 154, 108, 0.6);
+    }
+
+    /* === BACK TO TOP === */
+    #back-to-top {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 90;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(45, 27, 19, 0.85);
+      backdrop-filter: blur(10px);
+      color: #C49A6C;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid #C49A6C;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(16px);
+      transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease;
+    }
+    #back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    #back-to-top:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 20px rgba(196, 154, 108, 0.5);
+    }
+
+    /* === HALO EMAS DI FOTO CINCIN === */
+    .rings-photo-wrap {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin: 0 auto;
+    }
+    .rings-photo-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 0deg, #C49A6C 90deg, transparent 180deg, #8B3A3A 270deg, transparent 360deg);
+      animation: haloSpin 8s linear infinite;
+      opacity: 0.55;
+      z-index: -1;
+      filter: blur(2px);
+    }
+    @keyframes haloSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* === SPARKLE BURST (saat undangan dibuka) === */
+    .sparkle-burst {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #C49A6C;
+      box-shadow: 0 0 6px 2px rgba(196, 154, 108, 0.85);
+      pointer-events: none;
+      z-index: 150;
+      animation: sparkleOut 1s ease-out forwards;
+    }
+    @keyframes sparkleOut {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+    }
+
+    /* Hormati preferensi reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .petal, .rings-photo-wrap::before, #gift-ball, .music-btn.playing,
+      .sparkle-burst, .cover-content { animation: none !important; }
+      .reveal { transition: opacity 0.3s ease !important; transform: none !important; }
+    }
   </style>
 </head>
 <body class="cover-locked">
+
+  <!-- Progress bar tipis menandakan sejauh mana tamu sudah membaca undangan -->
+  <div id="scroll-progress"></div>
 
   <!-- ============================================= -->
   <!-- BACKGROUND PARALLAX (Berubah saat scroll)      -->
@@ -625,6 +726,11 @@
   <!-- ============================================= -->
   <div id="gift-ball" title="Kirim Kado / Hadiah">
     <i class="fas fa-gift"></i>
+  </div>
+
+  <!-- Tombol kembali ke atas -->
+  <div id="back-to-top" title="Kembali ke Atas">
+    <i class="fas fa-chevron-up"></i>
   </div>
 
   <!-- Gift Modal -->
@@ -744,9 +850,11 @@
       <p class="text-batak-gold tracking-[0.3em] text-sm md:text-base uppercase mb-6 reveal">The Wedding Of</p>
       
       <!-- FOTO 2 CINCIN -->
-      <div class="rings-photo reveal reveal-delay-1">
-        <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=800&auto=format&fit=crop" 
-             alt="Dua Cincin Pernikahan">
+      <div class="rings-photo-wrap reveal reveal-delay-1">
+        <div class="rings-photo">
+          <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=800&auto=format&fit=crop" 
+               alt="Dua Cincin Pernikahan">
+        </div>
       </div>
       
       <!-- Nama Pasangan -->
@@ -1218,7 +1326,10 @@
         });
       }
 
-      openBtn.addEventListener('click', function() {
+      openBtn.addEventListener('click', function(e) {
+        // Ledakan kilau emas dari tombol sebagai momen pembuka yang berkesan
+        burstSparkles(e.clientX, e.clientY);
+
         // FIX: Hapus class cover-locked agar scroll aktif
         body.classList.remove('cover-locked');
         
@@ -1703,6 +1814,51 @@
           transferSubmit.disabled = false;
         });
       });
+
+      // =============================================
+      // 13. SCROLL PROGRESS BAR & TOMBOL KEMBALI KE ATAS
+      // =============================================
+      const scrollProgress = document.getElementById('scroll-progress');
+      const backToTop = document.getElementById('back-to-top');
+
+      function updateScrollUI() {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+        scrollProgress.style.width = pct + '%';
+
+        if (window.scrollY > window.innerHeight * 0.8) {
+          backToTop.classList.add('show');
+        } else {
+          backToTop.classList.remove('show');
+        }
+      }
+
+      window.addEventListener('scroll', updateScrollUI);
+      window.addEventListener('resize', updateScrollUI);
+      updateScrollUI();
+
+      backToTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // =============================================
+      // 14. LEDAKAN KILAU EMAS SAAT UNDANGAN DIBUKA
+      // =============================================
+      function burstSparkles(x, y) {
+        const count = 18;
+        for (let i = 0; i < count; i++) {
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle-burst';
+          const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
+          const distance = 60 + Math.random() * 80;
+          sparkle.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+          sparkle.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+          sparkle.style.left = x + 'px';
+          sparkle.style.top = y + 'px';
+          document.body.appendChild(sparkle);
+          setTimeout(() => sparkle.remove(), 1000);
+        }
+      }
 
     })();
   </script>
