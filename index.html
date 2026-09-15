@@ -70,13 +70,45 @@
       background-color: #F9F3EC;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
+      position: relative;
     }
-    /* Body no-scroll hanya saat cover aktif */
-    body.cover-active {
+    /* Body no-scroll hanya saat cover aktif - FIX: gunakan class terpisah */
+    body.cover-locked {
       overflow: hidden;
       height: 100vh;
       position: fixed;
       width: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+    /* Background parallax berubah saat scroll */
+    .bg-parallax {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -2;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: opacity 1.5s ease-in-out;
+      opacity: 0;
+    }
+    .bg-parallax.active {
+      opacity: 1;
+    }
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(249,243,236,0.85) 0%, rgba(249,243,236,0.7) 50%, rgba(249,243,236,0.95) 100%);
+      pointer-events: none;
+      transition: opacity 1s ease;
     }
     .reveal {
       opacity: 0;
@@ -122,7 +154,6 @@
       visibility: hidden;
       pointer-events: none;
     }
-    /* Petals */
     .petal {
       position: absolute;
       top: -10%;
@@ -300,7 +331,7 @@
     #gift-modal .modal-content {
       background: linear-gradient(135deg, #F9F3EC, #FFFFFF);
       border-radius: 24px;
-      max-width: 480px;
+      max-width: 520px;
       width: 100%;
       padding: 32px;
       position: relative;
@@ -308,7 +339,7 @@
       border: 2px solid #C49A6C;
       transform: scale(0.8) translateY(30px);
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      max-height: 90vh;
+      max-height: 92vh;
       overflow-y: auto;
     }
     #gift-modal.active .modal-content {
@@ -354,7 +385,34 @@
       border-color: #4CAF50;
       color: white;
     }
-    /* Form ucapan */
+    /* Upload area */
+    .upload-area {
+      border: 2px dashed rgba(196, 154, 108, 0.5);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(196, 154, 108, 0.05);
+    }
+    .upload-area:hover {
+      border-color: #C49A6C;
+      background: rgba(196, 154, 108, 0.1);
+    }
+    .upload-area.has-file {
+      border-style: solid;
+      border-color: #4CAF50;
+      background: rgba(76, 175, 80, 0.08);
+    }
+    .upload-preview {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 12px;
+      margin-top: 12px;
+      display: none;
+    }
+    .upload-preview.show { display: inline-block; }
+    /* Form input */
     .form-input {
       width: 100%;
       padding: 12px 16px;
@@ -373,6 +431,41 @@
       background: white;
     }
     .form-input::placeholder { color: rgba(45, 27, 19, 0.4); }
+    /* Radio buttons */
+    .radio-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .radio-option {
+      position: relative;
+      cursor: pointer;
+    }
+    .radio-option input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .radio-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(196, 154, 108, 0.4);
+      background: white;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    .radio-option input:checked + .radio-label {
+      border-color: #8B3A3A;
+      background: rgba(139, 58, 58, 0.08);
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(139, 58, 58, 0.15);
+    }
+    .radio-label i { font-size: 18px; }
+    .radio-label span { font-size: 11px; font-weight: 500; }
     /* Toast notif */
     #toast {
       position: fixed;
@@ -391,8 +484,11 @@
       gap: 10px;
       font-size: 14px;
       border-left: 4px solid #C49A6C;
+      max-width: 90vw;
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.error { border-left-color: #E53E3E; }
+    #toast.success { border-left-color: #4CAF50; }
     /* Countdown small */
     .countdown-small {
       background: white;
@@ -412,13 +508,35 @@
       color: #8B3A3A;
       line-height: 1;
     }
-    /* Hide scrollbar for modal */
     #gift-modal .modal-content::-webkit-scrollbar { width: 6px; }
     #gift-modal .modal-content::-webkit-scrollbar-track { background: transparent; }
     #gift-modal .modal-content::-webkit-scrollbar-thumb { background: #C49A6C; border-radius: 3px; }
+    
+    /* Overlay background per section untuk readability */
+    .section-bg {
+      position: relative;
+      background: rgba(249, 243, 236, 0.92);
+      backdrop-filter: blur(8px);
+    }
+    .section-bg-dark {
+      position: relative;
+      background: rgba(45, 27, 19, 0.85);
+      backdrop-filter: blur(8px);
+    }
   </style>
 </head>
-<body class="bg-batak-cream text-batak-deep antialiased cover-active">
+<body class="cover-locked">
+
+  <!-- ============================================= -->
+  <!-- BACKGROUND PARALLAX (Berubah saat scroll)      -->
+  <!-- ============================================= -->
+  <div class="bg-parallax active" data-section="cover" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');"></div>
+  <div class="bg-parallax" data-section="hero" style="background-image: url('https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=2070&auto=format&fit=crop');"></div>
+  <div class="bg-parallax" data-section="acara" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop');"></div>
+  <div class="bg-parallax" data-section="lokasi" style="background-image: url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2070&auto=format&fit=crop');"></div>
+  <div class="bg-parallax" data-section="countdown" style="background-image: url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=2070&auto=format&fit=crop');"></div>
+  <div class="bg-parallax" data-section="ucapan" style="background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2070&auto=format&fit=crop');"></div>
+  <div class="bg-overlay"></div>
 
   <!-- ============================================= -->
   <!-- COVER PAGE                                     -->
@@ -512,7 +630,7 @@
   <!-- Gift Modal -->
   <div id="gift-modal">
     <div class="modal-content" id="gift-modal-content">
-      <button id="close-gift" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-batak-red/10 hover:bg-batak-red/20 flex items-center justify-center text-batak-red transition-all">
+      <button id="close-gift" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-batak-red/10 hover:bg-batak-red/20 flex items-center justify-center text-batak-red transition-all z-10">
         <i class="fas fa-times"></i>
       </button>
       
@@ -534,7 +652,7 @@
           <i class="fas fa-university text-batak-gold text-2xl"></i>
         </div>
         <div class="flex items-center justify-between gap-3 relative z-10">
-          <p class="text-white text-xl font-mono tracking-wider" id="rek1">1234 5678 9012</p>
+          <p class="text-white text-lg md:text-xl font-mono tracking-wider">1234 5678 9012</p>
           <button class="copy-btn" data-copy="123456789012">Salin</button>
         </div>
       </div>
@@ -549,7 +667,7 @@
           <i class="fas fa-university text-batak-gold text-2xl"></i>
         </div>
         <div class="flex items-center justify-between gap-3 relative z-10">
-          <p class="text-white text-xl font-mono tracking-wider" id="rek2">9876 5432 1098</p>
+          <p class="text-white text-lg md:text-xl font-mono tracking-wider">9876 5432 1098</p>
           <button class="copy-btn" data-copy="987654321098">Salin</button>
         </div>
       </div>
@@ -565,6 +683,34 @@
         </p>
       </div>
 
+      <!-- Upload bukti transfer -->
+      <div class="mt-6 pt-6 border-t border-batak-gold/30">
+        <p class="text-batak-deep text-sm font-semibold mb-2">
+          <i class="fas fa-receipt text-batak-red mr-2"></i>Upload Bukti Transfer
+        </p>
+        <p class="text-batak-deep/50 text-xs mb-3">Kirim bukti transfer Anda agar kami dapat mengonfirmasi kado Anda.</p>
+        
+        <form id="transfer-form">
+          <input type="text" id="transfer-name" class="form-input mb-3" placeholder="Nama pengirim" required>
+          <input type="number" id="transfer-amount" class="form-input mb-3" placeholder="Nominal transfer (contoh: 500000)" required>
+          
+          <div class="upload-area" id="upload-area">
+            <input type="file" id="transfer-proof" accept="image/*" class="hidden" required>
+            <div id="upload-placeholder">
+              <i class="fas fa-cloud-upload-alt text-3xl text-batak-gold mb-2"></i>
+              <p class="text-batak-deep/70 text-sm font-medium">Klik untuk pilih foto bukti transfer</p>
+              <p class="text-batak-deep/40 text-xs mt-1">Format: JPG, PNG (maks 5MB)</p>
+            </div>
+            <img id="upload-preview" class="upload-preview mx-auto" alt="Preview">
+          </div>
+          
+          <button type="submit" id="transfer-submit" class="w-full mt-4 py-3 bg-gradient-to-r from-batak-red to-batak-gold text-white rounded-full font-medium hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Bukti Transfer</span>
+          </button>
+        </form>
+      </div>
+
       <p class="text-center text-batak-deep/40 text-xs mt-6 italic">
         "Setiap pemberian adalah berkat yang tak ternilai"
       </p>
@@ -573,7 +719,7 @@
 
   <!-- Toast notification -->
   <div id="toast">
-    <i class="fas fa-check-circle"></i>
+    <i class="fas fa-check-circle" id="toast-icon"></i>
     <span id="toast-msg">Berhasil disalin!</span>
   </div>
 
@@ -591,14 +737,7 @@
   </div>
 
   <!-- ========== HERO / NAMA PENGANTIN DENGAN FOTO 2 CINCIN ========== -->
-  <section class="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
-    <div class="absolute inset-0 z-0">
-      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" 
-           alt="Pernikahan Batak" 
-           class="w-full h-full object-cover brightness-[0.5]">
-      <div class="absolute inset-0 bg-gradient-to-b from-batak-deep/70 via-batak-deep/50 to-batak-cream"></div>
-    </div>
-    
+  <section id="section-hero" data-bg="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
     <div class="relative z-10 text-center px-6 max-w-4xl mx-auto w-full">
       <div class="batak-ornament w-48 mx-auto mb-6 opacity-80 reveal"></div>
       
@@ -612,20 +751,20 @@
       
       <!-- Nama Pasangan -->
       <div class="mt-8 reveal reveal-delay-2">
-        <h1 class="font-script text-6xl md:text-8xl text-white leading-tight mb-2">Romauli</h1>
+        <h1 class="font-script text-6xl md:text-8xl text-batak-deep leading-tight mb-2">Romauli</h1>
         <p class="text-batak-gold text-3xl md:text-4xl font-batak my-2">&</p>
-        <h1 class="font-script text-6xl md:text-8xl text-white leading-tight">Binsar</h1>
+        <h1 class="font-script text-6xl md:text-8xl text-batak-deep leading-tight">Binsar</h1>
       </div>
       
-      <p class="text-white/90 text-base md:text-lg max-w-2xl mx-auto font-light leading-relaxed mt-6 reveal reveal-delay-3">
+      <p class="text-batak-deep/80 text-base md:text-lg max-w-2xl mx-auto font-light leading-relaxed mt-6 reveal reveal-delay-3">
         Dengan sukacita, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan kami dalam balutan adat Batak yang sakral.
       </p>
       
       <div class="flex flex-wrap gap-4 justify-center mt-8 reveal reveal-delay-4">
-        <a href="#countdown" class="px-8 py-3.5 bg-batak-gold text-batak-deep rounded-full font-medium hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+        <a href="#countdown" class="px-8 py-3.5 bg-batak-gold text-batak-deep rounded-full font-medium hover:bg-batak-red hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
           <i class="fas fa-hourglass-half mr-2"></i>Menuju Hari Bahagia
         </a>
-        <a href="#acara" class="px-8 py-3.5 border-2 border-white/70 text-white rounded-full font-medium hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
+        <a href="#acara" class="px-8 py-3.5 border-2 border-batak-deep/30 text-batak-deep rounded-full font-medium hover:bg-batak-deep hover:text-white transition-all duration-300 backdrop-blur-sm">
           <i class="fas fa-calendar-alt mr-2"></i>Lihat Acara
         </a>
       </div>
@@ -633,13 +772,13 @@
       <div class="batak-ornament w-64 mx-auto mt-10 opacity-60 reveal"></div>
     </div>
     
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white/70">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-batak-deep/70">
       <i class="fas fa-chevron-down text-2xl"></i>
     </div>
   </section>
 
   <!-- ========== PESTA ADAT SECTION ========== -->
-  <section id="acara" class="py-20 px-6 bg-gradient-to-b from-batak-cream to-white relative">
+  <section id="acara" data-bg="acara" class="py-20 px-6 relative">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-14 reveal">
         <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Rangkaian Acara</span>
@@ -648,7 +787,7 @@
       </div>
       
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-1 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-1 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
           <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=2070&auto=format&fit=crop');">
             <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
             <div class="absolute bottom-4 left-4 text-white">
@@ -669,7 +808,7 @@
           </div>
         </div>
         
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-2 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-2 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
           <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop');">
             <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
             <div class="absolute bottom-4 left-4 text-white">
@@ -690,7 +829,7 @@
           </div>
         </div>
         
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-3 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-3 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
           <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2070&auto=format&fit=crop');">
             <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
             <div class="absolute bottom-4 left-4 text-white">
@@ -723,7 +862,7 @@
   </section>
 
   <!-- ========== MAP SECTION - 2 LOKASI ========== -->
-  <section id="lokasi" class="py-20 px-6 bg-white relative">
+  <section id="lokasi" data-bg="lokasi" class="py-20 px-6 relative">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-12 reveal">
         <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Lokasi Acara</span>
@@ -732,7 +871,6 @@
       </div>
       
       <div class="grid md:grid-cols-2 gap-8">
-        <!-- Lokasi 1: Martumpol -->
         <div class="reveal reveal-delay-1">
           <div class="mb-4 flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-batak-red/10 flex items-center justify-center">
@@ -751,7 +889,7 @@
               class="w-full grayscale-[30%] hover:grayscale-0 transition-all duration-700">
             </iframe>
           </div>
-          <div class="mt-4 bg-batak-cream rounded-2xl p-4 border border-batak-gold/20">
+          <div class="mt-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 border border-batak-gold/20">
             <p class="text-sm text-batak-deep/80">
               <i class="fas fa-map-marker-alt text-batak-red mr-2"></i>
               Rumah Keluarga Romauli<br>
@@ -760,7 +898,6 @@
           </div>
         </div>
         
-        <!-- Lokasi 2: Pesta Adat -->
         <div class="reveal reveal-delay-2">
           <div class="mb-4 flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-batak-gold/20 flex items-center justify-center">
@@ -779,7 +916,7 @@
               class="w-full grayscale-[30%] hover:grayscale-0 transition-all duration-700">
             </iframe>
           </div>
-          <div class="mt-4 bg-batak-cream rounded-2xl p-4 border border-batak-gold/20">
+          <div class="mt-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 border border-batak-gold/20">
             <p class="text-sm text-batak-deep/80">
               <i class="fas fa-map-marker-alt text-batak-red mr-2"></i>
               Gedung Serbaguna<br>
@@ -791,11 +928,8 @@
     </div>
   </section>
 
-  <!-- ========== COUNTDOWN SECTION - 2 COUNTDOWN DI BAWAH ========== -->
-  <section id="countdown" class="py-20 px-6 bg-gradient-to-b from-white to-batak-cream relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-72 h-72 bg-batak-gold/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 left-0 w-96 h-96 bg-batak-red/5 rounded-full blur-3xl"></div>
-    
+  <!-- ========== COUNTDOWN SECTION - 2 COUNTDOWN ========== -->
+  <section id="countdown" data-bg="countdown" class="py-20 px-6 relative">
     <div class="max-w-6xl mx-auto relative z-10">
       <div class="text-center mb-14 reveal">
         <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Menghitung Hari</span>
@@ -804,8 +938,7 @@
       </div>
       
       <div class="grid md:grid-cols-2 gap-8">
-        <!-- Countdown Martumpol -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-1">
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-1">
           <div class="text-center mb-6">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-batak-red/10 rounded-full mb-3">
               <i class="fas fa-ring text-batak-red text-sm"></i>
@@ -814,7 +947,7 @@
             <h3 class="font-batak text-2xl font-bold text-batak-deep">Pertunangan</h3>
             <p class="text-batak-deep/50 text-xs mt-1">Sabtu, 8 November 2025 · 10.00 WIB</p>
           </div>
-          <div class="grid grid-cols-4 gap-2 md:gap-3" id="countdown-martumpol">
+          <div class="grid grid-cols-4 gap-2 md:gap-3">
             <div class="countdown-small text-center">
               <div class="countdown-num" id="m-days">00</div>
               <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">HARI</div>
@@ -834,8 +967,7 @@
           </div>
         </div>
         
-        <!-- Countdown Pesta Adat -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-2">
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-2">
           <div class="text-center mb-6">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-batak-gold/20 rounded-full mb-3">
               <i class="fas fa-drum text-batak-gold text-sm"></i>
@@ -844,7 +976,7 @@
             <h3 class="font-batak text-2xl font-bold text-batak-deep">Pernikahan</h3>
             <p class="text-batak-deep/50 text-xs mt-1">Sabtu, 15 November 2025 · 09.00 WIB</p>
           </div>
-          <div class="grid grid-cols-4 gap-2 md:gap-3" id="countdown-pesta">
+          <div class="grid grid-cols-4 gap-2 md:gap-3">
             <div class="countdown-small text-center">
               <div class="countdown-num" id="p-days">00</div>
               <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">HARI</div>
@@ -873,40 +1005,100 @@
   </section>
 
   <!-- ========== FORM UCAPAN / RSVP (KE TELEGRAM) ========== -->
-  <section id="ucapan" class="py-20 px-6 bg-white relative">
+  <section id="ucapan" data-bg="ucapan" class="py-20 px-6 relative">
     <div class="max-w-3xl mx-auto">
       <div class="text-center mb-12 reveal">
-        <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Kirim Ucapan</span>
+        <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Konfirmasi Kehadiran</span>
         <h2 class="font-batak text-4xl md:text-5xl font-bold mt-2 text-batak-deep">Doa & Ucapan</h2>
         <div class="batak-ornament w-40 mx-auto mt-4"></div>
-        <p class="text-batak-deep/60 text-sm mt-4 max-w-lg mx-auto">
-          Berikan doa dan ucapan terbaik Anda untuk kami. Ucapan Anda akan langsung terkirim ke mempelai.
+        <p class="text-batak-deep/70 text-sm mt-4 max-w-lg mx-auto">
+          Berikan doa dan ucapan terbaik Anda untuk kami. Konfirmasi kehadiran Anda juga sangat kami hargai.
         </p>
       </div>
       
-      <form id="wish-form" class="bg-gradient-to-br from-batak-cream to-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-1">
-        <div class="space-y-5">
+      <form id="wish-form" class="bg-white/95 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-1">
+        <div class="space-y-6">
+          <!-- Nama -->
           <div>
             <label class="block text-sm font-medium text-batak-deep mb-2">
-              <i class="fas fa-user text-batak-gold mr-2"></i>Nama Anda
+              <i class="fas fa-user text-batak-gold mr-2"></i>Nama Anda <span class="text-batak-red">*</span>
             </label>
             <input type="text" id="wish-name" class="form-input" placeholder="Masukkan nama Anda" required>
           </div>
           
+          <!-- Konfirmasi Kehadiran -->
+          <div>
+            <label class="block text-sm font-medium text-batak-deep mb-3">
+              <i class="fas fa-clipboard-check text-batak-gold mr-2"></i>Konfirmasi Kehadiran <span class="text-batak-red">*</span>
+            </label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="attendance" value="Hadir" required>
+                <div class="radio-label">
+                  <i class="fas fa-check-circle text-green-600"></i>
+                  <span class="text-batak-deep">Hadir</span>
+                </div>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="attendance" value="Tidak Hadir" required>
+                <div class="radio-label">
+                  <i class="fas fa-times-circle text-red-500"></i>
+                  <span class="text-batak-deep">Tidak Hadir</span>
+                </div>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="attendance" value="Ragu-ragu" required>
+                <div class="radio-label">
+                  <i class="fas fa-question-circle text-yellow-500"></i>
+                  <span class="text-batak-deep">Ragu</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Jumlah orang yang akan datang -->
+          <div id="jumlah-orang-field" class="hidden">
+            <label class="block text-sm font-medium text-batak-deep mb-2">
+              <i class="fas fa-users text-batak-gold mr-2"></i>Berapa Orang yang Akan Datang?
+            </label>
+            <select id="wish-count" class="form-input">
+              <option value="1">1 orang</option>
+              <option value="2">2 orang</option>
+              <option value="3">3 orang</option>
+              <option value="4">4 orang</option>
+              <option value="5">5 orang</option>
+              <option value="6">6 orang</option>
+              <option value="7">7 orang</option>
+              <option value="8">8 orang</option>
+              <option value="9">9 orang</option>
+              <option value="10">10 orang</option>
+              <option value="10+">Lebih dari 10 orang</option>
+            </select>
+          </div>
+          
+          <!-- Alasan tidak bisa hadir -->
+          <div id="alasan-field" class="hidden">
+            <label class="block text-sm font-medium text-batak-deep mb-2">
+              <i class="fas fa-info-circle text-batak-gold mr-2"></i>Alasan Tidak Bisa Hadir
+            </label>
+            <textarea id="wish-reason" rows="2" class="form-input resize-none" placeholder="Tuliskan alasan Anda..."></textarea>
+          </div>
+          
+          <!-- Ucapan -->
           <div>
             <label class="block text-sm font-medium text-batak-deep mb-2">
-              <i class="fas fa-comment-dots text-batak-gold mr-2"></i>Ucapan & Doa
+              <i class="fas fa-comment-dots text-batak-gold mr-2"></i>Ucapan & Doa <span class="text-batak-red">*</span>
             </label>
             <textarea id="wish-message" rows="4" class="form-input resize-none" placeholder="Tulis ucapan dan doa terbaik Anda..." required></textarea>
           </div>
           
           <button type="submit" id="wish-submit" class="w-full py-4 bg-gradient-to-r from-batak-red to-batak-gold text-white rounded-full font-medium hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
             <i class="fas fa-paper-plane"></i>
-            <span>Kirim Ucapan</span>
+            <span>Kirim Ucapan & Konfirmasi</span>
           </button>
           
           <p class="text-center text-batak-deep/40 text-xs">
-            <i class="fas fa-lock mr-1"></i> Ucapan Anda akan dikirim langsung ke mempelai via Telegram
+            <i class="fas fa-lock mr-1"></i> Data Anda akan dikirim langsung ke mempelai via Telegram
           </p>
         </div>
       </form>
@@ -985,7 +1177,7 @@
       createPetals();
 
       // =============================================
-      // 3. BUKA UNDANGAN
+      // 3. BUKA UNDANGAN - FIX SCROLL LOCK
       // =============================================
       const coverPage = document.getElementById('cover-page');
       const openBtn = document.getElementById('open-invitation');
@@ -1017,7 +1209,6 @@
         musicToggle.classList.remove('playing');
       }
 
-      // Fungsi untuk mengaktifkan semua reveal di viewport
       function activateVisibleReveals() {
         document.querySelectorAll('.reveal').forEach(el => {
           const rect = el.getBoundingClientRect();
@@ -1027,45 +1218,42 @@
         });
       }
 
-      // Fungsi utama buka undangan
       openBtn.addEventListener('click', function() {
-        // 1. Sembunyikan cover
+        // FIX: Hapus class cover-locked agar scroll aktif
+        body.classList.remove('cover-locked');
+        
+        // Sembunyikan cover
         coverPage.classList.add('hidden-cover');
         
-        // 2. Hapus cover-active dari body agar bisa scroll
-        body.classList.remove('cover-active');
-        
-        // 3. Reset scroll ke atas dulu
+        // Reset scroll
         window.scrollTo(0, 0);
         
-        // 4. Putar musik
+        // Putar musik
         playMusic();
         
-        // 5. Tampilkan kontrol musik
+        // Tampilkan kontrol musik
         setTimeout(() => {
           musicControl.classList.remove('hidden-music');
         }, 800);
         
-        // 6. Aktifkan semua animasi secara bertahap
+        // Aktifkan reveal
         setTimeout(() => {
           activateVisibleReveals();
         }, 300);
         
-        // 7. Auto scroll ke hero section setelah cover hilang
+        // Auto scroll ke hero
         setTimeout(() => {
-          const heroSection = document.querySelector('section');
+          const heroSection = document.querySelector('#section-hero');
           if (heroSection) {
             heroSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }, 1200);
         
-        // 8. Aktifkan reveal lagi setelah scroll
         setTimeout(() => {
           activateVisibleReveals();
         }, 2000);
       });
 
-      // Toggle musik
       musicToggle.addEventListener('click', function() {
         if (isMusicPlaying) {
           pauseMusic();
@@ -1075,7 +1263,44 @@
       });
 
       // =============================================
-      // 4. COUNTDOWN (2 BUAH)
+      // 4. BACKGROUND PARALLAX BERUBAH SAAT SCROLL
+      // =============================================
+      const bgElements = document.querySelectorAll('.bg-parallax');
+      const sections = document.querySelectorAll('[data-bg]');
+      
+      function updateBackground() {
+        let currentSection = 'cover';
+        const scrollPos = window.scrollY + window.innerHeight / 3;
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionBottom = sectionTop + section.offsetHeight;
+          
+          if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
+            currentSection = section.getAttribute('data-bg');
+          }
+        });
+        
+        // Jika sudah di paling bawah, aktifkan background ucapan
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+          currentSection = 'ucapan';
+        }
+        
+        bgElements.forEach(bg => {
+          if (bg.getAttribute('data-section') === currentSection) {
+            bg.classList.add('active');
+          } else {
+            bg.classList.remove('active');
+          }
+        });
+      }
+      
+      window.addEventListener('scroll', updateBackground);
+      window.addEventListener('load', updateBackground);
+      updateBackground();
+
+      // =============================================
+      // 5. COUNTDOWN (2 BUAH)
       // =============================================
       const targetMartumpol = new Date('November 8, 2025 10:00:00').getTime();
       const targetPesta = new Date('November 15, 2025 09:00:00').getTime();
@@ -1083,7 +1308,6 @@
       function updateCountdowns() {
         const now = new Date().getTime();
         
-        // Martumpol
         const distM = targetMartumpol - now;
         if (distM < 0) {
           ['m-days', 'm-hours', 'm-minutes', 'm-seconds'].forEach(id => document.getElementById(id).textContent = '00');
@@ -1094,7 +1318,6 @@
           document.getElementById('m-seconds').textContent = Math.floor((distM % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }
         
-        // Pesta Adat
         const distP = targetPesta - now;
         if (distP < 0) {
           ['p-days', 'p-hours', 'p-minutes', 'p-seconds'].forEach(id => document.getElementById(id).textContent = '00');
@@ -1110,7 +1333,7 @@
       setInterval(updateCountdowns, 1000);
 
       // =============================================
-      // 5. REVEAL ON SCROLL
+      // 6. REVEAL ON SCROLL
       // =============================================
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1126,7 +1349,7 @@
       document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
       // =============================================
-      // 6. SMOOTH SCROLL ANCHOR
+      // 7. SMOOTH SCROLL ANCHOR
       // =============================================
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -1139,7 +1362,7 @@
       });
 
       // =============================================
-      // 7. GIFT BALL & MODAL
+      // 8. GIFT BALL & MODAL
       // =============================================
       const giftBall = document.getElementById('gift-ball');
       const giftModal = document.getElementById('gift-modal');
@@ -1149,7 +1372,6 @@
       function openGiftModal() {
         giftModal.classList.add('active');
         giftBall.classList.add('opened');
-        // Cegah scroll body saat modal terbuka
         body.style.overflow = 'hidden';
       }
 
@@ -1169,7 +1391,6 @@
         closeGiftModal();
       });
 
-      // Tutup saat klik di luar modal content
       giftModal.addEventListener('click', function(e) {
         if (!giftModalContent.contains(e.target)) {
           closeGiftModal();
@@ -1177,15 +1398,26 @@
       });
 
       // =============================================
-      // 8. COPY REKENING
+      // 9. COPY REKENING
       // =============================================
-      function showToast(msg) {
+      function showToast(msg, type = 'success') {
         const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toast-icon');
         document.getElementById('toast-msg').textContent = msg;
+        
+        toast.className = '';
+        toast.classList.add(type);
         toast.classList.add('show');
+        
+        if (type === 'error') {
+          toastIcon.className = 'fas fa-exclamation-circle';
+        } else {
+          toastIcon.className = 'fas fa-check-circle';
+        }
+        
         setTimeout(() => {
           toast.classList.remove('show');
-        }, 2500);
+        }, 3000);
       }
 
       document.querySelectorAll('.copy-btn').forEach(btn => {
@@ -1193,12 +1425,11 @@
           e.stopPropagation();
           const textToCopy = this.getAttribute('data-copy');
           
-          // Fallback copy
           if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(textToCopy).then(() => {
               this.textContent = 'Tersalin!';
               this.classList.add('copied');
-              showToast('Nomor rekening berhasil disalin!');
+              showToast('Nomor rekening berhasil disalin!', 'success');
               setTimeout(() => {
                 this.textContent = 'Salin';
                 this.classList.remove('copied');
@@ -1223,19 +1454,46 @@
           document.execCommand('copy');
           btn.textContent = 'Tersalin!';
           btn.classList.add('copied');
-          showToast('Nomor rekening berhasil disalin!');
+          showToast('Nomor rekening berhasil disalin!', 'success');
           setTimeout(() => {
             btn.textContent = 'Salin';
             btn.classList.remove('copied');
           }, 2000);
         } catch (err) {
-          showToast('Gagal menyalin, silakan salin manual');
+          showToast('Gagal menyalin, silakan salin manual', 'error');
         }
         document.body.removeChild(textarea);
       }
 
       // =============================================
-      // 9. FORM UCAPAN KE TELEGRAM
+      // 10. FORM UCAPAN - KONDISIONAL FIELD
+      // =============================================
+      const attendanceRadios = document.querySelectorAll('input[name="attendance"]');
+      const jumlahOrangField = document.getElementById('jumlah-orang-field');
+      const alasanField = document.getElementById('alasan-field');
+      const wishReason = document.getElementById('wish-reason');
+      const wishCount = document.getElementById('wish-count');
+
+      attendanceRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.value === 'Hadir') {
+            jumlahOrangField.classList.remove('hidden');
+            alasanField.classList.add('hidden');
+            wishReason.removeAttribute('required');
+          } else if (this.value === 'Tidak Hadir') {
+            jumlahOrangField.classList.add('hidden');
+            alasanField.classList.remove('hidden');
+            wishReason.setAttribute('required', 'required');
+          } else { // Ragu-ragu
+            jumlahOrangField.classList.remove('hidden');
+            alasanField.classList.add('hidden');
+            wishReason.removeAttribute('required');
+          }
+        });
+      });
+
+      // =============================================
+      // 11. FORM UCAPAN KE TELEGRAM
       // =============================================
       const wishForm = document.getElementById('wish-form');
       const wishSubmit = document.getElementById('wish-submit');
@@ -1245,10 +1503,28 @@
         
         const name = document.getElementById('wish-name').value.trim();
         const message = document.getElementById('wish-message').value.trim();
+        const attendance = document.querySelector('input[name="attendance"]:checked');
         
         if (!name || !message) {
-          showToast('Mohon isi nama dan ucapan Anda');
+          showToast('Mohon isi nama dan ucapan Anda', 'error');
           return;
+        }
+        
+        if (!attendance) {
+          showToast('Mohon pilih konfirmasi kehadiran', 'error');
+          return;
+        }
+        
+        const attendanceValue = attendance.value;
+        let countText = '-';
+        let reasonText = '-';
+        
+        if (attendanceValue === 'Hadir' || attendanceValue === 'Ragu-ragu') {
+          countText = wishCount.value + ' orang';
+        }
+        
+        if (attendanceValue === 'Tidak Hadir') {
+          reasonText = wishReason.value.trim() || '(tidak diisi)';
         }
         
         // Ubah tombol jadi loading
@@ -1256,15 +1532,23 @@
         wishSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Mengirim...</span>';
         wishSubmit.disabled = true;
         
-        // Format pesan
         const guestFrom = getGuestName();
-        const text = `💌 *UCAPAN PERNIKAHAN*\n\n` +
-                     `👤 *Dari:* ${name}\n` +
-                     `🎯 *Untuk:* Romauli & Binsar\n` +
-                     `📝 *Ucapan:*\n${message}\n\n` +
-                     `🔗 Dikirim dari undangan tamu: _${guestFrom}_`;
+        let text = `💌 *UCAPAN & KONFIRMASI KEHADIRAN*\n\n` +
+                   `👤 *Nama:* ${name}\n` +
+                   `🎯 *Untuk:* Romauli & Binsar\n` +
+                   `✅ *Kehadiran:* ${attendanceValue}\n`;
         
-        // Kirim ke Telegram
+        if (attendanceValue === 'Hadir' || attendanceValue === 'Ragu-ragu') {
+          text += `👥 *Jumlah:* ${countText}\n`;
+        }
+        
+        if (attendanceValue === 'Tidak Hadir') {
+          text += `📝 *Alasan:* ${reasonText}\n`;
+        }
+        
+        text += `💬 *Ucapan:*\n${message}\n\n` +
+                `🔗 Dikirim dari undangan tamu: _${guestFrom}_`;
+        
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         
         fetch(url, {
@@ -1279,18 +1563,144 @@
         .then(response => response.json())
         .then(data => {
           if (data.ok) {
-            showToast('Ucapan berhasil terkirim! Terima kasih 🙏');
+            showToast('Ucapan berhasil terkirim! Terima kasih 🙏', 'success');
             wishForm.reset();
+            jumlahOrangField.classList.add('hidden');
+            alasanField.classList.add('hidden');
           } else {
-            showToast('Gagal mengirim. Silakan coba lagi.');
+            showToast('Gagal mengirim. Silakan coba lagi.', 'error');
           }
         })
         .catch(() => {
-          showToast('Gagal mengirim. Periksa koneksi Anda.');
+          showToast('Gagal mengirim. Periksa koneksi Anda.', 'error');
         })
         .finally(() => {
           wishSubmit.innerHTML = originalHTML;
           wishSubmit.disabled = false;
+        });
+      });
+
+      // =============================================
+      // 12. UPLOAD BUKTI TRANSFER
+      // =============================================
+      const uploadArea = document.getElementById('upload-area');
+      const transferProof = document.getElementById('transfer-proof');
+      const uploadPreview = document.getElementById('upload-preview');
+      const uploadPlaceholder = document.getElementById('upload-placeholder');
+      const transferForm = document.getElementById('transfer-form');
+      const transferSubmit = document.getElementById('transfer-submit');
+
+      uploadArea.addEventListener('click', function() {
+        transferProof.click();
+      });
+
+      transferProof.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          // Validasi ukuran (max 5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            showToast('Ukuran file terlalu besar. Maksimal 5MB.', 'error');
+            this.value = '';
+            return;
+          }
+          
+          // Validasi tipe
+          if (!file.type.startsWith('image/')) {
+            showToast('File harus berupa gambar.', 'error');
+            this.value = '';
+            return;
+          }
+          
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            uploadPreview.src = e.target.result;
+            uploadPreview.classList.add('show');
+            uploadPlaceholder.classList.add('hidden');
+            uploadArea.classList.add('has-file');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Drag & drop
+      uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '#C49A6C';
+        this.style.background = 'rgba(196, 154, 108, 0.15)';
+      });
+
+      uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '';
+        this.style.background = '';
+      });
+
+      uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '';
+        this.style.background = '';
+        
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          transferProof.files = e.dataTransfer.files;
+          transferProof.dispatchEvent(new Event('change'));
+        }
+      });
+
+      transferForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('transfer-name').value.trim();
+        const amount = document.getElementById('transfer-amount').value.trim();
+        const file = transferProof.files[0];
+        
+        if (!name || !amount || !file) {
+          showToast('Mohon lengkapi semua data dan upload bukti transfer.', 'error');
+          return;
+        }
+        
+        const originalHTML = transferSubmit.innerHTML;
+        transferSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Mengirim...</span>';
+        transferSubmit.disabled = true;
+        
+        const guestFrom = getGuestName();
+        const caption = `🎁 *BUKTI TRANSFER KADO*\n\n` +
+                       `👤 *Nama Pengirim:* ${name}\n` +
+                       `💰 *Nominal:* Rp ${parseInt(amount).toLocaleString('id-ID')}\n` +
+                       `📅 *Tanggal:* ${new Date().toLocaleString('id-ID')}\n\n` +
+                       `🔗 Dikirim dari undangan tamu: _${guestFrom}_`;
+        
+        // Kirim foto ke Telegram
+        const formData = new FormData();
+        formData.append('chat_id', TELEGRAM_CHAT_ID);
+        formData.append('photo', file);
+        formData.append('caption', caption);
+        formData.append('parse_mode', 'Markdown');
+        
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+        
+        fetch(url, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.ok) {
+            showToast('Bukti transfer berhasil dikirim! Terima kasih 🙏', 'success');
+            transferForm.reset();
+            uploadPreview.classList.remove('show');
+            uploadPlaceholder.classList.remove('hidden');
+            uploadArea.classList.remove('has-file');
+          } else {
+            showToast('Gagal mengirim. Silakan coba lagi.', 'error');
+          }
+        })
+        .catch(() => {
+          showToast('Gagal mengirim. Periksa koneksi Anda.', 'error');
+        })
+        .finally(() => {
+          transferSubmit.innerHTML = originalHTML;
+          transferSubmit.disabled = false;
         });
       });
 
