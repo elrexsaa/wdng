@@ -1239,7 +1239,7 @@
     (function() {
       'use strict';
 
-      const TELEGRAM_BOT_TOKEN = '8701770674:AAFYO6nDEyKAMzPgkFGzIx-qB8hjsZvBuaw';
+      const TELEGRAM_BOT_TOKEN = '8701770674:AAFRrF5b2uVWj05VXk7sbqCs9FYbeUWideM';
       const TELEGRAM_CHAT_ID = ['5546121776', '7483666804'];
 
       // =============================================
@@ -1651,10 +1651,10 @@
         }
         
         if (attendanceValue === 'Tidak Hadir') {
-          text += `📝 *Alasan:* ${reasonText}\n`;
+          text += `📝 Alasan: ${reasonText}\n`;
         }
         
-        text += `💬 *Ucapan:*\n${message}\n\n` +
+        text += `💬 Ucapan:\n${message}\n\n` +
                 `🔗 Dikirim dari undangan tamu: _${guestFrom}_`;
         
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -1783,7 +1783,6 @@
         formData.append('chat_id', TELEGRAM_CHAT_ID);
         formData.append('photo', file);
         formData.append('caption', caption);
-        formData.append('parse_mode', 'Markdown');
         
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
         
