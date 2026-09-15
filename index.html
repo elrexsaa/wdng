@@ -65,19 +65,18 @@
   <style>
     html {
       scroll-behavior: smooth;
-      scroll-snap-type: y proximity;
     }
     body {
       background-color: #F9F3EC;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
-    body.no-scroll {
+    /* Body no-scroll hanya saat cover aktif */
+    body.cover-active {
       overflow: hidden;
       height: 100vh;
-    }
-    .snap-section {
-      scroll-snap-align: start;
+      position: fixed;
+      width: 100%;
     }
     .reveal {
       opacity: 0;
@@ -123,7 +122,7 @@
       visibility: hidden;
       pointer-events: none;
     }
-    /* Efek bunga / partikel jatuh */
+    /* Petals */
     .petal {
       position: absolute;
       top: -10%;
@@ -139,11 +138,9 @@
       90% { opacity: 1; }
       100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
     }
-    /* Glow emas */
     .gold-glow {
       box-shadow: 0 0 30px rgba(196, 154, 108, 0.5), 0 0 60px rgba(196, 154, 108, 0.3);
     }
-    /* Tombol buka undangan */
     .btn-open {
       position: relative;
       overflow: hidden;
@@ -159,14 +156,11 @@
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
       transition: left 0.6s ease;
     }
-    .btn-open:hover::before {
-      left: 100%;
-    }
+    .btn-open:hover::before { left: 100%; }
     .btn-open:hover {
       transform: translateY(-3px);
       box-shadow: 0 15px 30px -8px rgba(139, 58, 58, 0.5);
     }
-    /* Frame ornamen pada cover */
     .cover-frame {
       border: 2px solid rgba(196, 154, 108, 0.4);
       border-radius: 20px;
@@ -192,7 +186,7 @@
     /* Musik control */
     #music-control {
       position: fixed;
-      bottom: 20px;
+      bottom: 90px;
       right: 20px;
       z-index: 90;
       transition: all 0.5s ease;
@@ -220,37 +214,216 @@
       transform: scale(1.1);
       box-shadow: 0 0 20px rgba(196, 154, 108, 0.5);
     }
-    .music-btn.playing {
-      animation: pulseSlow 2s ease-in-out infinite;
-    }
-    /* Progress bar cover */
-    .typing-text {
-      display: inline-block;
-      overflow: hidden;
-      white-space: nowrap;
-      border-right: 2px solid #C49A6C;
-      animation: blink 1s step-end infinite;
-    }
-    @keyframes blink {
-      50% { border-color: transparent; }
-    }
-    /* Smooth fade in for cover content */
-    .cover-content {
-      animation: coverFadeIn 1.5s ease-out forwards;
-    }
+    .music-btn.playing { animation: pulseSlow 2s ease-in-out infinite; }
+    .cover-content { animation: coverFadeIn 1.5s ease-out forwards; }
     @keyframes coverFadeIn {
       0% { opacity: 0; transform: translateY(30px); }
       100% { opacity: 1; transform: translateY(0); }
     }
+    /* Foto 2 cincin */
+    .rings-photo {
+      width: 180px;
+      height: 180px;
+      margin: 0 auto;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid #C49A6C;
+      box-shadow: 0 10px 40px rgba(196, 154, 108, 0.4), 0 0 0 8px rgba(196, 154, 108, 0.1);
+      animation: ringsFloat 4s ease-in-out infinite;
+      position: relative;
+    }
+    .rings-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    @keyframes ringsFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    /* Floating gift ball */
+    #gift-ball {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 95;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8B3A3A, #C49A6C);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(139, 58, 58, 0.5), 0 0 0 4px rgba(196, 154, 108, 0.3);
+      animation: giftFloat 3s ease-in-out infinite;
+      transition: all 0.3s ease;
+      color: white;
+      font-size: 28px;
+    }
+    #gift-ball:hover {
+      transform: scale(1.1) rotate(-5deg);
+      box-shadow: 0 15px 40px rgba(139, 58, 58, 0.6), 0 0 0 8px rgba(196, 154, 108, 0.4);
+    }
+    @keyframes giftFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    #gift-ball.opened {
+      animation: giftOpen 0.6s ease forwards;
+    }
+    @keyframes giftOpen {
+      0% { transform: scale(1) rotate(0deg); }
+      30% { transform: scale(1.3) rotate(-15deg); }
+      60% { transform: scale(1.2) rotate(15deg); }
+      100% { transform: scale(1.1) rotate(0deg); }
+    }
+    /* Modal gift */
+    #gift-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(45, 27, 19, 0.7);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #gift-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    #gift-modal .modal-content {
+      background: linear-gradient(135deg, #F9F3EC, #FFFFFF);
+      border-radius: 24px;
+      max-width: 480px;
+      width: 100%;
+      padding: 32px;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+      border: 2px solid #C49A6C;
+      transform: scale(0.8) translateY(30px);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    #gift-modal.active .modal-content {
+      transform: scale(1) translateY(0);
+    }
+    /* Bank card */
+    .bank-card {
+      background: linear-gradient(135deg, #2D1B13, #4A2E20);
+      border-radius: 16px;
+      padding: 20px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid #C49A6C;
+    }
+    .bank-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(196, 154, 108, 0.2), transparent);
+      border-radius: 50%;
+    }
+    .copy-btn {
+      background: rgba(196, 154, 108, 0.2);
+      border: 1px solid #C49A6C;
+      color: #C49A6C;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .copy-btn:hover {
+      background: #C49A6C;
+      color: #2D1B13;
+    }
+    .copy-btn.copied {
+      background: #4CAF50;
+      border-color: #4CAF50;
+      color: white;
+    }
+    /* Form ucapan */
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(196, 154, 108, 0.4);
+      background: rgba(255,255,255,0.9);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      color: #2D1B13;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #C49A6C;
+      box-shadow: 0 0 0 4px rgba(196, 154, 108, 0.15);
+      background: white;
+    }
+    .form-input::placeholder { color: rgba(45, 27, 19, 0.4); }
+    /* Toast notif */
+    #toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #2D1B13;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 12px;
+      z-index: 300;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      border-left: 4px solid #C49A6C;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    /* Countdown small */
+    .countdown-small {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      border: 1.5px solid rgba(196, 154, 108, 0.3);
+      box-shadow: 0 8px 24px rgba(45, 27, 19, 0.08);
+      transition: all 0.3s ease;
+    }
+    .countdown-small:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(45, 27, 19, 0.15);
+    }
+    .countdown-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #8B3A3A;
+      line-height: 1;
+    }
+    /* Hide scrollbar for modal */
+    #gift-modal .modal-content::-webkit-scrollbar { width: 6px; }
+    #gift-modal .modal-content::-webkit-scrollbar-track { background: transparent; }
+    #gift-modal .modal-content::-webkit-scrollbar-thumb { background: #C49A6C; border-radius: 3px; }
   </style>
 </head>
-<body class="bg-batak-cream text-batak-deep antialiased no-scroll">
+<body class="bg-batak-cream text-batak-deep antialiased cover-active">
 
   <!-- ============================================= -->
-  <!-- COVER PAGE / HALAMAN DEPAN UNDANGAN           -->
+  <!-- COVER PAGE                                     -->
   <!-- ============================================= -->
   <div id="cover-page" class="bg-batak-deep">
-    <!-- Background image -->
     <div class="absolute inset-0 z-0">
       <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" 
            alt="Pernikahan Batak" 
@@ -258,13 +431,10 @@
       <div class="absolute inset-0 bg-gradient-to-b from-batak-deep/80 via-batak-deep/60 to-batak-deep/90"></div>
     </div>
 
-    <!-- Petals jatuh -->
     <div id="petals-container" class="absolute inset-0 overflow-hidden z-10"></div>
 
-    <!-- Konten cover -->
     <div class="relative z-20 min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center">
       
-      <!-- Ornamen atas -->
       <div class="cover-content">
         <div class="batak-ornament w-40 mx-auto mb-4 opacity-70"></div>
         <p class="text-batak-gold tracking-[0.4em] text-xs md:text-sm uppercase mb-6">
@@ -272,10 +442,8 @@
         </p>
       </div>
 
-      <!-- Frame utama -->
       <div class="cover-frame cover-content p-8 md:p-12 max-w-lg w-full bg-batak-deep/30 backdrop-blur-sm" style="animation-delay: 0.3s;">
         
-        <!-- Logo kecil -->
         <div class="flex justify-center mb-4">
           <svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="46" stroke="#C49A6C" stroke-width="2.5" fill="transparent" fill-opacity="0.1"/>
@@ -285,46 +453,34 @@
           </svg>
         </div>
 
-        <!-- Nama pasangan dengan script font -->
         <p class="text-batak-gold/80 text-sm tracking-widest uppercase mb-2">The Wedding Of</p>
-        <h1 class="font-script text-5xl md:text-6xl text-white mb-2 leading-tight">
-          Romauli
-        </h1>
+        <h1 class="font-script text-5xl md:text-6xl text-white mb-2 leading-tight">Romauli</h1>
         <p class="text-batak-gold text-3xl font-batak mb-2">&</p>
-        <h1 class="font-script text-5xl md:text-6xl text-white mb-6 leading-tight">
-          Binsar
-        </h1>
+        <h1 class="font-script text-5xl md:text-6xl text-white mb-6 leading-tight">Binsar</h1>
 
         <div class="batak-ornament w-32 mx-auto mb-6 opacity-60"></div>
 
-        <!-- Info tanggal -->
         <p class="text-white/80 text-sm mb-8">
           <i class="fas fa-calendar-alt text-batak-gold mr-2"></i>
           Sabtu, 15 November 2025 · Medan
         </p>
 
-        <!-- Nama tamu yang diundang -->
         <div class="border-t border-b border-batak-gold/30 py-5 mb-8">
           <p class="text-white/60 text-xs tracking-widest uppercase mb-2">Kepada Bapak/Ibu/Saudara/i</p>
-          <p id="guest-name" class="font-batak text-3xl md:text-4xl text-batak-gold font-semibold">
-            Tamu Undangan
-          </p>
+          <p id="guest-name" class="font-batak text-3xl md:text-4xl text-batak-gold font-semibold">Tamu Undangan</p>
           <p class="text-white/50 text-xs mt-2 italic">Tanpa mengurangi rasa hormat, kami mengundang Anda</p>
         </div>
 
-        <!-- Tombol buka undangan -->
         <button id="open-invitation" class="btn-open inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-batak-red to-batak-gold text-white rounded-full font-medium text-base shadow-lg gold-glow">
           <i class="fas fa-envelope-open-text"></i>
           Buka Undangan
         </button>
 
-        <!-- Musik hint -->
         <p class="text-white/40 text-xs mt-5">
           <i class="fas fa-music mr-1"></i> Musik akan diputar otomatis
         </p>
       </div>
 
-      <!-- Ornamen bawah -->
       <div class="cover-content mt-8">
         <div class="batak-ornament w-48 mx-auto opacity-50"></div>
         <p class="text-white/40 text-xs mt-3">#RomauliBinsarForever</p>
@@ -333,15 +489,13 @@
   </div>
 
   <!-- ============================================= -->
-  <!-- AUDIO / MUSIK LATAR                          -->
+  <!-- AUDIO                                          -->
   <!-- ============================================= -->
   <audio id="bg-music" loop preload="auto">
-    <!-- Menggunakan audio royalty-free dari archive.org (contoh) -->
     <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
-    Browser Anda tidak mendukung elemen audio.
   </audio>
 
-  <!-- Kontrol musik floating (muncul setelah cover ditutup) -->
+  <!-- Musik control -->
   <div id="music-control" class="hidden-music">
     <div class="music-btn" id="music-toggle" title="Putar/Jeda Musik">
       <i class="fas fa-music" id="music-icon"></i>
@@ -349,43 +503,125 @@
   </div>
 
   <!-- ============================================= -->
-  <!-- KONTEN UNDANGAN (setelah cover)               -->
+  <!-- FLOATING GIFT BALL                             -->
+  <!-- ============================================= -->
+  <div id="gift-ball" title="Kirim Kado / Hadiah">
+    <i class="fas fa-gift"></i>
+  </div>
+
+  <!-- Gift Modal -->
+  <div id="gift-modal">
+    <div class="modal-content" id="gift-modal-content">
+      <button id="close-gift" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-batak-red/10 hover:bg-batak-red/20 flex items-center justify-center text-batak-red transition-all">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-batak-red to-batak-gold flex items-center justify-center mb-3 shadow-lg">
+          <i class="fas fa-gift text-white text-2xl"></i>
+        </div>
+        <h3 class="font-batak text-3xl font-bold text-batak-deep">Kirim Kado</h3>
+        <p class="text-batak-deep/60 text-sm mt-2">Terima kasih atas perhatian dan doa restunya. Anda dapat mengirimkan kado melalui transfer bank berikut:</p>
+      </div>
+
+      <!-- Bank Card 1 -->
+      <div class="bank-card">
+        <div class="flex justify-between items-start mb-3 relative z-10">
+          <div>
+            <p class="text-batak-gold text-xs tracking-widest uppercase">Bank Mandiri</p>
+            <p class="text-white/60 text-xs mt-1">a.n. Romauli Sitompul</p>
+          </div>
+          <i class="fas fa-university text-batak-gold text-2xl"></i>
+        </div>
+        <div class="flex items-center justify-between gap-3 relative z-10">
+          <p class="text-white text-xl font-mono tracking-wider" id="rek1">1234 5678 9012</p>
+          <button class="copy-btn" data-copy="123456789012">Salin</button>
+        </div>
+      </div>
+
+      <!-- Bank Card 2 -->
+      <div class="bank-card">
+        <div class="flex justify-between items-start mb-3 relative z-10">
+          <div>
+            <p class="text-batak-gold text-xs tracking-widest uppercase">Bank BCA</p>
+            <p class="text-white/60 text-xs mt-1">a.n. Binsar Simanjuntak</p>
+          </div>
+          <i class="fas fa-university text-batak-gold text-2xl"></i>
+        </div>
+        <div class="flex items-center justify-between gap-3 relative z-10">
+          <p class="text-white text-xl font-mono tracking-wider" id="rek2">9876 5432 1098</p>
+          <button class="copy-btn" data-copy="987654321098">Salin</button>
+        </div>
+      </div>
+
+      <!-- Alamat kado fisik -->
+      <div class="bg-batak-gold/10 border border-batak-gold/30 rounded-2xl p-4 mt-4">
+        <p class="text-batak-deep text-sm font-semibold mb-2">
+          <i class="fas fa-home text-batak-red mr-2"></i>Kirim Kado Fisik
+        </p>
+        <p class="text-batak-deep/70 text-xs leading-relaxed">
+          Jl. Gatot Subroto No. 123, Medan, Sumatera Utara 20112<br>
+          (Rumah Keluarga Romauli)
+        </p>
+      </div>
+
+      <p class="text-center text-batak-deep/40 text-xs mt-6 italic">
+        "Setiap pemberian adalah berkat yang tak ternilai"
+      </p>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toast-msg">Berhasil disalin!</span>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- KONTEN UTAMA                                   -->
   <!-- ============================================= -->
 
-  <!-- Logo SVG fixed -->
   <div class="fixed top-4 left-4 z-50 logo-svg">
     <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="46" stroke="#C49A6C" stroke-width="2.5" fill="#F9F3EC" fill-opacity="0.85"/>
       <path d="M50 22 L68 45 L58 45 L58 68 L42 68 L42 45 L32 45 Z" fill="#8B3A3A" opacity="0.9"/>
       <path d="M50 30 L62 47 L54 47 L54 64 L46 64 L46 47 L38 47 Z" fill="#C49A6C"/>
       <circle cx="50" cy="50" r="8" fill="#F9F3EC" stroke="#8B3A3A" stroke-width="2"/>
-      <path d="M50 38 L52 44 L58 44 L53 48 L55 54 L50 50 L45 54 L47 48 L42 44 L48 44 Z" fill="#2D1B13" opacity="0.5"/>
     </svg>
   </div>
 
-  <!-- ========== HERO SECTION ========== -->
-  <section class="snap-section relative min-h-screen flex items-center justify-center overflow-hidden">
+  <!-- ========== HERO / NAMA PENGANTIN DENGAN FOTO 2 CINCIN ========== -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
     <div class="absolute inset-0 z-0">
       <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" 
            alt="Pernikahan Batak" 
-           class="w-full h-full object-cover brightness-[0.55]">
-      <div class="absolute inset-0 bg-gradient-to-b from-batak-deep/60 via-batak-deep/40 to-batak-cream"></div>
+           class="w-full h-full object-cover brightness-[0.5]">
+      <div class="absolute inset-0 bg-gradient-to-b from-batak-deep/70 via-batak-deep/50 to-batak-cream"></div>
     </div>
     
-    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
-      <div class="batak-ornament w-48 mx-auto mb-6 opacity-80"></div>
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto w-full">
+      <div class="batak-ornament w-48 mx-auto mb-6 opacity-80 reveal"></div>
       
-      <p class="text-batak-gold tracking-[0.3em] text-sm md:text-base uppercase mb-4 reveal">Undangan Pernikahan</p>
+      <p class="text-batak-gold tracking-[0.3em] text-sm md:text-base uppercase mb-6 reveal">The Wedding Of</p>
       
-      <h1 class="font-batak text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight mb-4 reveal reveal-delay-1">
-        Romauli<br><span class="text-batak-gold">&</span> Binsar
-      </h1>
+      <!-- FOTO 2 CINCIN -->
+      <div class="rings-photo reveal reveal-delay-1">
+        <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=800&auto=format&fit=crop" 
+             alt="Dua Cincin Pernikahan">
+      </div>
       
-      <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed mb-8 reveal reveal-delay-2">
+      <!-- Nama Pasangan -->
+      <div class="mt-8 reveal reveal-delay-2">
+        <h1 class="font-script text-6xl md:text-8xl text-white leading-tight mb-2">Romauli</h1>
+        <p class="text-batak-gold text-3xl md:text-4xl font-batak my-2">&</p>
+        <h1 class="font-script text-6xl md:text-8xl text-white leading-tight">Binsar</h1>
+      </div>
+      
+      <p class="text-white/90 text-base md:text-lg max-w-2xl mx-auto font-light leading-relaxed mt-6 reveal reveal-delay-3">
         Dengan sukacita, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan kami dalam balutan adat Batak yang sakral.
       </p>
       
-      <div class="flex flex-wrap gap-4 justify-center reveal reveal-delay-3">
+      <div class="flex flex-wrap gap-4 justify-center mt-8 reveal reveal-delay-4">
         <a href="#countdown" class="px-8 py-3.5 bg-batak-gold text-batak-deep rounded-full font-medium hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
           <i class="fas fa-hourglass-half mr-2"></i>Menuju Hari Bahagia
         </a>
@@ -394,7 +630,7 @@
         </a>
       </div>
       
-      <div class="batak-ornament w-64 mx-auto mt-10 opacity-60"></div>
+      <div class="batak-ornament w-64 mx-auto mt-10 opacity-60 reveal"></div>
     </div>
     
     <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white/70">
@@ -402,45 +638,8 @@
     </div>
   </section>
 
-  <!-- ========== COUNTDOWN SECTION ========== -->
-  <section id="countdown" class="snap-section py-20 px-6 bg-batak-cream relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-72 h-72 bg-batak-gold/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 left-0 w-96 h-96 bg-batak-red/5 rounded-full blur-3xl"></div>
-    
-    <div class="max-w-5xl mx-auto relative z-10">
-      <div class="text-center mb-12 reveal">
-        <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Menghitung Hari</span>
-        <h2 class="font-batak text-4xl md:text-5xl font-bold mt-2 text-batak-deep">Menuju Janji Suci</h2>
-        <div class="batak-ornament w-40 mx-auto mt-4"></div>
-      </div>
-      
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 reveal reveal-delay-1">
-        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 text-center shadow-xl border border-batak-gold/20 transform hover:scale-105 transition-transform duration-300">
-          <div class="text-4xl md:text-5xl font-bold text-batak-red" id="days">00</div>
-          <div class="text-sm text-batak-deep/60 mt-1 font-medium tracking-wider">Hari</div>
-        </div>
-        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 text-center shadow-xl border border-batak-gold/20 transform hover:scale-105 transition-transform duration-300">
-          <div class="text-4xl md:text-5xl font-bold text-batak-red" id="hours">00</div>
-          <div class="text-sm text-batak-deep/60 mt-1 font-medium tracking-wider">Jam</div>
-        </div>
-        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 text-center shadow-xl border border-batak-gold/20 transform hover:scale-105 transition-transform duration-300">
-          <div class="text-4xl md:text-5xl font-bold text-batak-red" id="minutes">00</div>
-          <div class="text-sm text-batak-deep/60 mt-1 font-medium tracking-wider">Menit</div>
-        </div>
-        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 text-center shadow-xl border border-batak-gold/20 transform hover:scale-105 transition-transform duration-300">
-          <div class="text-4xl md:text-5xl font-bold text-batak-red" id="seconds">00</div>
-          <div class="text-sm text-batak-deep/60 mt-1 font-medium tracking-wider">Detik</div>
-        </div>
-      </div>
-      
-      <p class="text-center text-batak-deep/70 mt-8 text-sm reveal reveal-delay-2">
-        <i class="fas fa-calendar-check text-batak-gold mr-2"></i>Sabtu, 15 November 2025 · Medan, Sumatera Utara
-      </p>
-    </div>
-  </section>
-
   <!-- ========== PESTA ADAT SECTION ========== -->
-  <section id="acara" class="snap-section py-20 px-6 bg-gradient-to-b from-batak-cream to-white relative">
+  <section id="acara" class="py-20 px-6 bg-gradient-to-b from-batak-cream to-white relative">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-14 reveal">
         <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Rangkaian Acara</span>
@@ -449,7 +648,6 @@
       </div>
       
       <div class="grid md:grid-cols-3 gap-8">
-        <!-- Kartu 1: Martumpol -->
         <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-1 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
           <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=2070&auto=format&fit=crop');">
             <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
@@ -471,7 +669,6 @@
           </div>
         </div>
         
-        <!-- Kartu 2: Pesta Adat (Puncak) -->
         <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-2 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
           <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop');">
             <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
@@ -493,7 +690,6 @@
           </div>
         </div>
         
-        <!-- Kartu 3: Resepsi -->
         <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-3 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
           <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2070&auto=format&fit=crop');">
             <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
@@ -526,8 +722,8 @@
     </div>
   </section>
 
-  <!-- ========== MAP SECTION ========== -->
-  <section id="lokasi" class="snap-section py-20 px-6 bg-white relative">
+  <!-- ========== MAP SECTION - 2 LOKASI ========== -->
+  <section id="lokasi" class="py-20 px-6 bg-white relative">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-12 reveal">
         <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Lokasi Acara</span>
@@ -535,61 +731,190 @@
         <div class="batak-ornament w-40 mx-auto mt-4"></div>
       </div>
       
-      <div class="grid md:grid-cols-2 gap-10 items-center">
-        <div class="map-container reveal reveal-delay-1 rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.018425216099!2d98.67288931475397!3d3.595146997425419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f8f5e6b3b3d%3A0x8e4a7c8c8c8c8c8c!2sMedan%2C%20Kota%20Medan%2C%20Sumatera%20Utara!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
-            width="100%" 
-            height="380" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade"
-            class="w-full grayscale-[30%] hover:grayscale-0 transition-all duration-700">
-          </iframe>
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Lokasi 1: Martumpol -->
+        <div class="reveal reveal-delay-1">
+          <div class="mb-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-batak-red/10 flex items-center justify-center">
+              <i class="fas fa-ring text-batak-red"></i>
+            </div>
+            <div>
+              <h3 class="font-batak text-xl font-bold text-batak-deep">Lokasi Martumpol</h3>
+              <p class="text-batak-deep/60 text-xs">Sabtu, 8 November 2025 · 10.00 WIB</p>
+            </div>
+          </div>
+          <div class="map-container rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.018425216099!2d98.67288931475397!3d3.595146997425419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f8f5e6b3b3d%3A0x8e4a7c8c8c8c8c8c!2sMedan%2C%20Kota%20Medan%2C%20Sumatera%20Utara!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
+              width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade"
+              class="w-full grayscale-[30%] hover:grayscale-0 transition-all duration-700">
+            </iframe>
+          </div>
+          <div class="mt-4 bg-batak-cream rounded-2xl p-4 border border-batak-gold/20">
+            <p class="text-sm text-batak-deep/80">
+              <i class="fas fa-map-marker-alt text-batak-red mr-2"></i>
+              Rumah Keluarga Romauli<br>
+              <span class="text-batak-deep/60 text-xs">Jl. Gatot Subroto No. 123, Medan</span>
+            </p>
+          </div>
         </div>
         
-        <div class="space-y-6 reveal reveal-delay-2">
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-full bg-batak-gold/20 flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-map-marked-alt text-batak-red text-xl"></i>
+        <!-- Lokasi 2: Pesta Adat -->
+        <div class="reveal reveal-delay-2">
+          <div class="mb-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-batak-gold/20 flex items-center justify-center">
+              <i class="fas fa-drum text-batak-gold"></i>
             </div>
             <div>
-              <h4 class="font-semibold text-batak-deep text-lg">Gedung Serbaguna</h4>
-              <p class="text-batak-deep/70">Jl. Gatot Subroto No. 123, Medan, Sumatera Utara 20112</p>
+              <h3 class="font-batak text-xl font-bold text-batak-deep">Lokasi Pesta Adat</h3>
+              <p class="text-batak-deep/60 text-xs">Sabtu, 15 November 2025 · 09.00 WIB</p>
             </div>
           </div>
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-full bg-batak-gold/20 flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-clock text-batak-red text-xl"></i>
-            </div>
-            <div>
-              <h4 class="font-semibold text-batak-deep text-lg">Waktu</h4>
-              <p class="text-batak-deep/70">Sabtu, 15 November 2025 · 09.00 WIB - 21.00 WIB</p>
-            </div>
+          <div class="map-container rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.018425216099!2d98.67288931475397!3d3.595146997425419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f8f5e6b3b3d%3A0x8e4a7c8c8c8c8c8c!2sMedan%2C%20Kota%20Medan%2C%20Sumatera%20Utara!5e0!3m2!1sen!2sid!4v1700000000001!5m2!1sen!2sid" 
+              width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade"
+              class="w-full grayscale-[30%] hover:grayscale-0 transition-all duration-700">
+            </iframe>
           </div>
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-full bg-batak-gold/20 flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-phone-alt text-batak-red text-xl"></i>
-            </div>
-            <div>
-              <h4 class="font-semibold text-batak-deep text-lg">Kontak</h4>
-              <p class="text-batak-deep/70">Romauli: 0812-3456-7890 · Binsar: 0812-3456-7891</p>
-            </div>
-          </div>
-          
-          <div class="pt-4">
-            <a href="https://maps.google.com" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-batak-red text-white rounded-full hover:bg-batak-deep transition-colors duration-300 shadow-lg">
-              <i class="fas fa-directions"></i> Buka di Google Maps
-            </a>
+          <div class="mt-4 bg-batak-cream rounded-2xl p-4 border border-batak-gold/20">
+            <p class="text-sm text-batak-deep/80">
+              <i class="fas fa-map-marker-alt text-batak-red mr-2"></i>
+              Gedung Serbaguna<br>
+              <span class="text-batak-deep/60 text-xs">Jl. Gatot Subroto No. 123, Medan</span>
+            </p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ========== COUNTDOWN SECTION - 2 COUNTDOWN DI BAWAH ========== -->
+  <section id="countdown" class="py-20 px-6 bg-gradient-to-b from-white to-batak-cream relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-72 h-72 bg-batak-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-batak-red/5 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-14 reveal">
+        <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Menghitung Hari</span>
+        <h2 class="font-batak text-4xl md:text-5xl font-bold mt-2 text-batak-deep">Menuju Hari Bahagia</h2>
+        <div class="batak-ornament w-40 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Countdown Martumpol -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-1">
+          <div class="text-center mb-6">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-batak-red/10 rounded-full mb-3">
+              <i class="fas fa-ring text-batak-red text-sm"></i>
+              <span class="text-batak-red text-xs font-semibold tracking-wider uppercase">Martumpol</span>
+            </div>
+            <h3 class="font-batak text-2xl font-bold text-batak-deep">Pertunangan</h3>
+            <p class="text-batak-deep/50 text-xs mt-1">Sabtu, 8 November 2025 · 10.00 WIB</p>
+          </div>
+          <div class="grid grid-cols-4 gap-2 md:gap-3" id="countdown-martumpol">
+            <div class="countdown-small text-center">
+              <div class="countdown-num" id="m-days">00</div>
+              <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">HARI</div>
+            </div>
+            <div class="countdown-small text-center">
+              <div class="countdown-num" id="m-hours">00</div>
+              <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">JAM</div>
+            </div>
+            <div class="countdown-small text-center">
+              <div class="countdown-num" id="m-minutes">00</div>
+              <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">MENIT</div>
+            </div>
+            <div class="countdown-small text-center">
+              <div class="countdown-num" id="m-seconds">00</div>
+              <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">DETIK</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Countdown Pesta Adat -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-2">
+          <div class="text-center mb-6">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-batak-gold/20 rounded-full mb-3">
+              <i class="fas fa-drum text-batak-gold text-sm"></i>
+              <span class="text-batak-gold text-xs font-semibold tracking-wider uppercase">Pesta Adat</span>
+            </div>
+            <h3 class="font-batak text-2xl font-bold text-batak-deep">Pernikahan</h3>
+            <p class="text-batak-deep/50 text-xs mt-1">Sabtu, 15 November 2025 · 09.00 WIB</p>
+          </div>
+          <div class="grid grid-cols-4 gap-2 md:gap-3" id="countdown-pesta">
+            <div class="countdown-small text-center">
+              <div class="countdown-num" id="p-days">00</div>
+              <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">HARI</div>
+            </div>
+            <div class="countdown-small text-center">
+              <div class="countdown-num" id="p-hours">00</div>
+              <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">JAM</div>
+            </div>
+            <div class="countdown-small text-center">
+              <div class="countdown-num" id="p-minutes">00</div>
+              <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">MENIT</div>
+            </div>
+            <div class="countdown-small text-center">
+              <div class="countdown-num" id="p-seconds">00</div>
+              <div class="text-[10px] md:text-xs text-batak-deep/50 mt-1 tracking-wider">DETIK</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <p class="text-center text-batak-deep/70 mt-8 text-sm reveal reveal-delay-3">
+        <i class="fas fa-heart text-batak-red mr-2"></i>
+        Kami menantikan kehadiran dan doa restu Anda
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== FORM UCAPAN / RSVP (KE TELEGRAM) ========== -->
+  <section id="ucapan" class="py-20 px-6 bg-white relative">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12 reveal">
+        <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Kirim Ucapan</span>
+        <h2 class="font-batak text-4xl md:text-5xl font-bold mt-2 text-batak-deep">Doa & Ucapan</h2>
+        <div class="batak-ornament w-40 mx-auto mt-4"></div>
+        <p class="text-batak-deep/60 text-sm mt-4 max-w-lg mx-auto">
+          Berikan doa dan ucapan terbaik Anda untuk kami. Ucapan Anda akan langsung terkirim ke mempelai.
+        </p>
+      </div>
+      
+      <form id="wish-form" class="bg-gradient-to-br from-batak-cream to-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20 reveal reveal-delay-1">
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-batak-deep mb-2">
+              <i class="fas fa-user text-batak-gold mr-2"></i>Nama Anda
+            </label>
+            <input type="text" id="wish-name" class="form-input" placeholder="Masukkan nama Anda" required>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-batak-deep mb-2">
+              <i class="fas fa-comment-dots text-batak-gold mr-2"></i>Ucapan & Doa
+            </label>
+            <textarea id="wish-message" rows="4" class="form-input resize-none" placeholder="Tulis ucapan dan doa terbaik Anda..." required></textarea>
+          </div>
+          
+          <button type="submit" id="wish-submit" class="w-full py-4 bg-gradient-to-r from-batak-red to-batak-gold text-white rounded-full font-medium hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Ucapan</span>
+          </button>
+          
+          <p class="text-center text-batak-deep/40 text-xs">
+            <i class="fas fa-lock mr-1"></i> Ucapan Anda akan dikirim langsung ke mempelai via Telegram
+          </p>
+        </div>
+      </form>
+    </div>
+  </section>
+
   <!-- ========== FOOTER ========== -->
-  <footer class="snap-section py-16 px-6 bg-batak-deep text-white/90 relative">
+  <footer class="py-16 px-6 bg-batak-deep text-white/90 relative">
     <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-batak-gold via-batak-red to-batak-gold"></div>
     <div class="max-w-4xl mx-auto text-center">
       <div class="batak-ornament w-48 mx-auto mb-6 opacity-40"></div>
@@ -607,30 +932,38 @@
     </div>
   </footer>
 
-  <!-- ========== JAVASCRIPT ========== -->
+  <!-- ============================================= -->
+  <!-- JAVASCRIPT                                     -->
+  <!-- ============================================= -->
   <script>
     (function() {
+      'use strict';
+
       // =============================================
-      // 1. AMBIL NAMA TAMU DARI URL PARAMETER
+      // KONFIGURASI TELEGRAM BOT
+      // =============================================
+      const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // Ganti dengan token bot Anda
+      const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';    // Ganti dengan chat ID Anda
+
+      // =============================================
+      // 1. NAMA TAMU DARI URL
       // =============================================
       function getGuestName() {
         const urlParams = new URLSearchParams(window.location.search);
         const guest = urlParams.get('to') || urlParams.get('nama') || urlParams.get('kepada');
         if (guest) {
-          // Decode dan ganti + dengan spasi
           return decodeURIComponent(guest.replace(/\+/g, ' '));
         }
         return 'Tamu Undangan';
       }
 
       document.getElementById('guest-name').textContent = getGuestName();
-      // Update document title dengan nama tamu
       if (getGuestName() !== 'Tamu Undangan') {
         document.title = `Undangan untuk ${getGuestName()} · Romauli & Binsar`;
       }
 
       // =============================================
-      // 2. EFEK KELOPAK BUNGA JATUH
+      // 2. PETALS (BUNGA JATUH)
       // =============================================
       function createPetals() {
         const container = document.getElementById('petals-container');
@@ -652,7 +985,7 @@
       createPetals();
 
       // =============================================
-      // 3. BUKA UNDANGAN + PUTAR MUSIK
+      // 3. BUKA UNDANGAN
       // =============================================
       const coverPage = document.getElementById('cover-page');
       const openBtn = document.getElementById('open-invitation');
@@ -663,8 +996,6 @@
       const body = document.body;
 
       let isMusicPlaying = false;
-
-      // Set volume awal
       bgMusic.volume = 0.5;
 
       function playMusic() {
@@ -672,9 +1003,7 @@
           isMusicPlaying = true;
           musicIcon.className = 'fas fa-music';
           musicToggle.classList.add('playing');
-        }).catch((error) => {
-          console.log('Autoplay diblokir, user perlu interaksi:', error);
-          // Coba lagi setelah interaksi
+        }).catch(() => {
           isMusicPlaying = false;
           musicIcon.className = 'fas fa-volume-mute';
           musicToggle.classList.remove('playing');
@@ -688,38 +1017,52 @@
         musicToggle.classList.remove('playing');
       }
 
+      // Fungsi untuk mengaktifkan semua reveal di viewport
+      function activateVisibleReveals() {
+        document.querySelectorAll('.reveal').forEach(el => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 50 && rect.bottom > 0) {
+            el.classList.add('active');
+          }
+        });
+      }
+
+      // Fungsi utama buka undangan
       openBtn.addEventListener('click', function() {
         // 1. Sembunyikan cover
         coverPage.classList.add('hidden-cover');
         
-        // 2. Hapus no-scroll dari body
-        body.classList.remove('no-scroll');
+        // 2. Hapus cover-active dari body agar bisa scroll
+        body.classList.remove('cover-active');
         
-        // 3. Putar musik
+        // 3. Reset scroll ke atas dulu
+        window.scrollTo(0, 0);
+        
+        // 4. Putar musik
         playMusic();
         
-        // 4. Tampilkan kontrol musik setelah delay
+        // 5. Tampilkan kontrol musik
         setTimeout(() => {
           musicControl.classList.remove('hidden-music');
         }, 800);
         
-        // 5. Scroll ke section countdown setelah cover hilang
+        // 6. Aktifkan semua animasi secara bertahap
         setTimeout(() => {
-          const countdownSection = document.getElementById('countdown');
-          if (countdownSection) {
-            countdownSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          activateVisibleReveals();
+        }, 300);
+        
+        // 7. Auto scroll ke hero section setelah cover hilang
+        setTimeout(() => {
+          const heroSection = document.querySelector('section');
+          if (heroSection) {
+            heroSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }, 1200);
         
-        // 6. Trigger reveal untuk elemen yang sudah ada di viewport
+        // 8. Aktifkan reveal lagi setelah scroll
         setTimeout(() => {
-          document.querySelectorAll('.reveal').forEach(el => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight - 100) {
-              el.classList.add('active');
-            }
-          });
-        }, 500);
+          activateVisibleReveals();
+        }, 2000);
       });
 
       // Toggle musik
@@ -732,41 +1075,43 @@
       });
 
       // =============================================
-      // 4. COUNTDOWN
+      // 4. COUNTDOWN (2 BUAH)
       // =============================================
-      const targetDate = new Date('November 15, 2025 09:00:00').getTime();
+      const targetMartumpol = new Date('November 8, 2025 10:00:00').getTime();
+      const targetPesta = new Date('November 15, 2025 09:00:00').getTime();
       
-      function updateCountdown() {
+      function updateCountdowns() {
         const now = new Date().getTime();
-        const distance = targetDate - now;
         
-        if (distance < 0) {
-          document.getElementById('days').textContent = '00';
-          document.getElementById('hours').textContent = '00';
-          document.getElementById('minutes').textContent = '00';
-          document.getElementById('seconds').textContent = '00';
-          return;
+        // Martumpol
+        const distM = targetMartumpol - now;
+        if (distM < 0) {
+          ['m-days', 'm-hours', 'm-minutes', 'm-seconds'].forEach(id => document.getElementById(id).textContent = '00');
+        } else {
+          document.getElementById('m-days').textContent = Math.floor(distM / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+          document.getElementById('m-hours').textContent = Math.floor((distM % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+          document.getElementById('m-minutes').textContent = Math.floor((distM % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+          document.getElementById('m-seconds').textContent = Math.floor((distM % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }
         
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
-        document.getElementById('days').textContent = days.toString().padStart(2, '0');
-        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        // Pesta Adat
+        const distP = targetPesta - now;
+        if (distP < 0) {
+          ['p-days', 'p-hours', 'p-minutes', 'p-seconds'].forEach(id => document.getElementById(id).textContent = '00');
+        } else {
+          document.getElementById('p-days').textContent = Math.floor(distP / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+          document.getElementById('p-hours').textContent = Math.floor((distP % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+          document.getElementById('p-minutes').textContent = Math.floor((distP % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+          document.getElementById('p-seconds').textContent = Math.floor((distP % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }
       }
       
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
+      updateCountdowns();
+      setInterval(updateCountdowns, 1000);
 
       // =============================================
-      // 5. REVEAL ANIMATION ON SCROLL
+      // 5. REVEAL ON SCROLL
       // =============================================
-      const revealElements = document.querySelectorAll('.reveal');
-      
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -774,11 +1119,11 @@
           }
         });
       }, {
-        threshold: 0.15,
-        rootMargin: '0px 0px -40px 0px'
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
       });
       
-      revealElements.forEach(el => observer.observe(el));
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
       // =============================================
       // 6. SMOOTH SCROLL ANCHOR
@@ -788,30 +1133,167 @@
           e.preventDefault();
           const target = document.querySelector(this.getAttribute('href'));
           if (target) {
-            target.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         });
       });
 
       // =============================================
-      // 7. HANDLE AUDIO ENDED (loop sudah di-set)
+      // 7. GIFT BALL & MODAL
       // =============================================
-      bgMusic.addEventListener('ended', function() {
-        // Karena loop=true, ini tidak akan terpanggil, tapi sebagai fallback
-        if (isMusicPlaying) {
-          bgMusic.currentTime = 0;
-          bgMusic.play();
+      const giftBall = document.getElementById('gift-ball');
+      const giftModal = document.getElementById('gift-modal');
+      const giftModalContent = document.getElementById('gift-modal-content');
+      const closeGift = document.getElementById('close-gift');
+
+      function openGiftModal() {
+        giftModal.classList.add('active');
+        giftBall.classList.add('opened');
+        // Cegah scroll body saat modal terbuka
+        body.style.overflow = 'hidden';
+      }
+
+      function closeGiftModal() {
+        giftModal.classList.remove('active');
+        giftBall.classList.remove('opened');
+        body.style.overflow = '';
+      }
+
+      giftBall.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openGiftModal();
+      });
+
+      closeGift.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closeGiftModal();
+      });
+
+      // Tutup saat klik di luar modal content
+      giftModal.addEventListener('click', function(e) {
+        if (!giftModalContent.contains(e.target)) {
+          closeGiftModal();
         }
       });
 
       // =============================================
-      // 8. PAUSE MUSIC SAAT TAB TIDAK AKTIF (opsional)
+      // 8. COPY REKENING
       // =============================================
-      // Tidak diimplementasi agar musik tetap berjalan
-      
+      function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2500);
+      }
+
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const textToCopy = this.getAttribute('data-copy');
+          
+          // Fallback copy
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+              this.textContent = 'Tersalin!';
+              this.classList.add('copied');
+              showToast('Nomor rekening berhasil disalin!');
+              setTimeout(() => {
+                this.textContent = 'Salin';
+                this.classList.remove('copied');
+              }, 2000);
+            }).catch(() => {
+              fallbackCopy(textToCopy, this);
+            });
+          } else {
+            fallbackCopy(textToCopy, this);
+          }
+        });
+      });
+
+      function fallbackCopy(text, btn) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          btn.textContent = 'Tersalin!';
+          btn.classList.add('copied');
+          showToast('Nomor rekening berhasil disalin!');
+          setTimeout(() => {
+            btn.textContent = 'Salin';
+            btn.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          showToast('Gagal menyalin, silakan salin manual');
+        }
+        document.body.removeChild(textarea);
+      }
+
+      // =============================================
+      // 9. FORM UCAPAN KE TELEGRAM
+      // =============================================
+      const wishForm = document.getElementById('wish-form');
+      const wishSubmit = document.getElementById('wish-submit');
+
+      wishForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('wish-name').value.trim();
+        const message = document.getElementById('wish-message').value.trim();
+        
+        if (!name || !message) {
+          showToast('Mohon isi nama dan ucapan Anda');
+          return;
+        }
+        
+        // Ubah tombol jadi loading
+        const originalHTML = wishSubmit.innerHTML;
+        wishSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Mengirim...</span>';
+        wishSubmit.disabled = true;
+        
+        // Format pesan
+        const guestFrom = getGuestName();
+        const text = `💌 *UCAPAN PERNIKAHAN*\n\n` +
+                     `👤 *Dari:* ${name}\n` +
+                     `🎯 *Untuk:* Romauli & Binsar\n` +
+                     `📝 *Ucapan:*\n${message}\n\n` +
+                     `🔗 Dikirim dari undangan tamu: _${guestFrom}_`;
+        
+        // Kirim ke Telegram
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: text,
+            parse_mode: 'Markdown'
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.ok) {
+            showToast('Ucapan berhasil terkirim! Terima kasih 🙏');
+            wishForm.reset();
+          } else {
+            showToast('Gagal mengirim. Silakan coba lagi.');
+          }
+        })
+        .catch(() => {
+          showToast('Gagal mengirim. Periksa koneksi Anda.');
+        })
+        .finally(() => {
+          wishSubmit.innerHTML = originalHTML;
+          wishSubmit.disabled = false;
+        });
+      });
+
     })();
   </script>
 </body>
