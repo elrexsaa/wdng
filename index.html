@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Undangan Pernikahan · Batak Romance</title>
+  <!-- Meta OG -->
+  <meta property="og:title" content="Undangan Pernikahan Batak · Romance & Elegan">
+  <meta property="og:description" content="Kami mengundang Anda untuk merayakan cinta dalam balutan adat Batak yang romantis.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop">
+  <meta property="og:url" content="https://undanganbatak.example.com">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Tailwind via CDN + custom config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'batak': ['"Cormorant Garamond"', 'serif'],
+            'sans': ['"Inter"', 'sans-serif'],
+            'script': ['"Great Vibes"', 'cursive'],
+          },
+          colors: {
+            'batak-gold': '#C49A6C',
+            'batak-deep': '#2D1B13',
+            'batak-cream': '#F9F3EC',
+            'batak-red': '#8B3A3A',
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.8s ease-out forwards',
+            'fade-in': 'fadeIn 1s ease-out forwards',
+            'float': 'float 3s ease-in-out infinite',
+            'pulse-slow': 'pulseSlow 3s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            pulseSlow: {
+              '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+              '50%': { opacity: '0.8', transform: 'scale(1.05)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y proximity;
+    }
+    body {
+      background-color: #F9F3EC;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    body.no-scroll {
+      overflow: hidden;
+      height: 100vh;
+    }
+    .snap-section {
+      scroll-snap-align: start;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+    .reveal-delay-4 { transition-delay: 0.6s; }
+    .map-container iframe {
+      transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px -12px rgba(45, 27, 19, 0.3);
+    }
+    .map-container iframe:hover {
+      transform: scale(1.01);
+      box-shadow: 0 28px 48px -12px rgba(45, 27, 19, 0.4);
+    }
+    .batak-ornament {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q25 0 50 10 T100 10" fill="none" stroke="%23C49A6C" stroke-width="1.5"/><path d="M0 14 Q25 4 50 14 T100 14" fill="none" stroke="%238B3A3A" stroke-width="1" opacity="0.6"/></svg>');
+      background-repeat: repeat-x;
+      background-size: 120px 20px;
+      height: 20px;
+    }
+    .logo-svg {
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+    /* === COVER PAGE === */
+    #cover-page {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      transition: opacity 1s ease, visibility 1s ease;
+      overflow: hidden;
+    }
+    #cover-page.hidden-cover {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    /* Efek bunga / partikel jatuh */
+    .petal {
+      position: absolute;
+      top: -10%;
+      font-size: 18px;
+      color: rgba(196, 154, 108, 0.7);
+      animation: fall linear infinite;
+      pointer-events: none;
+      z-index: 5;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+    /* Glow emas */
+    .gold-glow {
+      box-shadow: 0 0 30px rgba(196, 154, 108, 0.5), 0 0 60px rgba(196, 154, 108, 0.3);
+    }
+    /* Tombol buka undangan */
+    .btn-open {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    .btn-open::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s ease;
+    }
+    .btn-open:hover::before {
+      left: 100%;
+    }
+    .btn-open:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px -8px rgba(139, 58, 58, 0.5);
+    }
+    /* Frame ornamen pada cover */
+    .cover-frame {
+      border: 2px solid rgba(196, 154, 108, 0.4);
+      border-radius: 20px;
+      position: relative;
+    }
+    .cover-frame::before, .cover-frame::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 2px solid #C49A6C;
+    }
+    .cover-frame::before {
+      top: -2px; left: -2px;
+      border-right: none; border-bottom: none;
+      border-top-left-radius: 20px;
+    }
+    .cover-frame::after {
+      bottom: -2px; right: -2px;
+      border-left: none; border-top: none;
+      border-bottom-right-radius: 20px;
+    }
+    /* Musik control */
+    #music-control {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 90;
+      transition: all 0.5s ease;
+    }
+    #music-control.hidden-music {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.5);
+    }
+    .music-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(45, 27, 19, 0.85);
+      backdrop-filter: blur(10px);
+      color: #C49A6C;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid #C49A6C;
+    }
+    .music-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(196, 154, 108, 0.5);
+    }
+    .music-btn.playing {
+      animation: pulseSlow 2s ease-in-out infinite;
+    }
+    /* Progress bar cover */
+    .typing-text {
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid #C49A6C;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+    /* Smooth fade in for cover content */
+    .cover-content {
+      animation: coverFadeIn 1.5s ease-out forwards;
+    }
+    @keyframes coverFadeIn {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-batak-cream text-batak-deep antialiased no-scroll">
+
+  <!-- ============================================= -->
+  <!-- COVER PAGE / HALAMAN DEPAN UNDANGAN           -->
+  <!-- ============================================= -->
+  <div id="cover-page" class="bg-batak-deep">
+    <!-- Background image -->
+    <div class="absolute inset-0 z-0">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" 
+           alt="Pernikahan Batak" 
+           class="w-full h-full object-cover brightness-[0.4]">
+      <div class="absolute inset-0 bg-gradient-to-b from-batak-deep/80 via-batak-deep/60 to-batak-deep/90"></div>
+    </div>
+
+    <!-- Petals jatuh -->
+    <div id="petals-container" class="absolute inset-0 overflow-hidden z-10"></div>
+
+    <!-- Konten cover -->
+    <div class="relative z-20 min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center">
+      
+      <!-- Ornamen atas -->
+      <div class="cover-content">
+        <div class="batak-ornament w-40 mx-auto mb-4 opacity-70"></div>
+        <p class="text-batak-gold tracking-[0.4em] text-xs md:text-sm uppercase mb-6">
+          Undangan Pernikahan
+        </p>
+      </div>
+
+      <!-- Frame utama -->
+      <div class="cover-frame cover-content p-8 md:p-12 max-w-lg w-full bg-batak-deep/30 backdrop-blur-sm" style="animation-delay: 0.3s;">
+        
+        <!-- Logo kecil -->
+        <div class="flex justify-center mb-4">
+          <svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="46" stroke="#C49A6C" stroke-width="2.5" fill="transparent" fill-opacity="0.1"/>
+            <path d="M50 22 L68 45 L58 45 L58 68 L42 68 L42 45 L32 45 Z" fill="#8B3A3A" opacity="0.9"/>
+            <path d="M50 30 L62 47 L54 47 L54 64 L46 64 L46 47 L38 47 Z" fill="#C49A6C"/>
+            <circle cx="50" cy="50" r="8" fill="#F9F3EC" stroke="#8B3A3A" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <!-- Nama pasangan dengan script font -->
+        <p class="text-batak-gold/80 text-sm tracking-widest uppercase mb-2">The Wedding Of</p>
+        <h1 class="font-script text-5xl md:text-6xl text-white mb-2 leading-tight">
+          Romauli
+        </h1>
+        <p class="text-batak-gold text-3xl font-batak mb-2">&</p>
+        <h1 class="font-script text-5xl md:text-6xl text-white mb-6 leading-tight">
+          Binsar
+        </h1>
+
+        <div class="batak-ornament w-32 mx-auto mb-6 opacity-60"></div>
+
+        <!-- Info tanggal -->
+        <p class="text-white/80 text-sm mb-8">
+          <i class="fas fa-calendar-alt text-batak-gold mr-2"></i>
+          Sabtu, 15 November 2025 · Medan
+        </p>
+
+        <!-- Nama tamu yang diundang -->
+        <div class="border-t border-b border-batak-gold/30 py-5 mb-8">
+          <p class="text-white/60 text-xs tracking-widest uppercase mb-2">Kepada Bapak/Ibu/Saudara/i</p>
+          <p id="guest-name" class="font-batak text-3xl md:text-4xl text-batak-gold font-semibold">
+            Tamu Undangan
+          </p>
+          <p class="text-white/50 text-xs mt-2 italic">Tanpa mengurangi rasa hormat, kami mengundang Anda</p>
+        </div>
+
+        <!-- Tombol buka undangan -->
+        <button id="open-invitation" class="btn-open inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-batak-red to-batak-gold text-white rounded-full font-medium text-base shadow-lg gold-glow">
+          <i class="fas fa-envelope-open-text"></i>
+          Buka Undangan
+        </button>
+
+        <!-- Musik hint -->
+        <p class="text-white/40 text-xs mt-5">
+          <i class="fas fa-music mr-1"></i> Musik akan diputar otomatis
+        </p>
+      </div>
+
+      <!-- Ornamen bawah -->
+      <div class="cover-content mt-8">
+        <div class="batak-ornament w-48 mx-auto opacity-50"></div>
+        <p class="text-white/40 text-xs mt-3">#RomauliBinsarForever</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- AUDIO / MUSIK LATAR                          -->
+  <!-- ============================================= -->
+  <audio id="bg-music" loop preload="auto">
+    <!-- Menggunakan audio royalty-free dari archive.org (contoh) -->
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+    Browser Anda tidak mendukung elemen audio.
+  </audio>
+
+  <!-- Kontrol musik floating (muncul setelah cover ditutup) -->
+  <div id="music-control" class="hidden-music">
+    <div class="music-btn" id="music-toggle" title="Putar/Jeda Musik">
+      <i class="fas fa-music" id="music-icon"></i>
+    </div>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- KONTEN UNDANGAN (setelah cover)               -->
+  <!-- ============================================= -->
+
+  <!-- Logo SVG fixed -->
+  <div class="fixed top-4 left-4 z-50 logo-svg">
+    <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="46" stroke="#C49A6C" stroke-width="2.5" fill="#F9F3EC" fill-opacity="0.85"/>
+      <path d="M50 22 L68 45 L58 45 L58 68 L42 68 L42 45 L32 45 Z" fill="#8B3A3A" opacity="0.9"/>
+      <path d="M50 30 L62 47 L54 47 L54 64 L46 64 L46 47 L38 47 Z" fill="#C49A6C"/>
+      <circle cx="50" cy="50" r="8" fill="#F9F3EC" stroke="#8B3A3A" stroke-width="2"/>
+      <path d="M50 38 L52 44 L58 44 L53 48 L55 54 L50 50 L45 54 L47 48 L42 44 L48 44 Z" fill="#2D1B13" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <!-- ========== HERO SECTION ========== -->
+  <section class="snap-section relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" 
+           alt="Pernikahan Batak" 
+           class="w-full h-full object-cover brightness-[0.55]">
+      <div class="absolute inset-0 bg-gradient-to-b from-batak-deep/60 via-batak-deep/40 to-batak-cream"></div>
+    </div>
+    
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      <div class="batak-ornament w-48 mx-auto mb-6 opacity-80"></div>
+      
+      <p class="text-batak-gold tracking-[0.3em] text-sm md:text-base uppercase mb-4 reveal">Undangan Pernikahan</p>
+      
+      <h1 class="font-batak text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight mb-4 reveal reveal-delay-1">
+        Romauli<br><span class="text-batak-gold">&</span> Binsar
+      </h1>
+      
+      <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed mb-8 reveal reveal-delay-2">
+        Dengan sukacita, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan kami dalam balutan adat Batak yang sakral.
+      </p>
+      
+      <div class="flex flex-wrap gap-4 justify-center reveal reveal-delay-3">
+        <a href="#countdown" class="px-8 py-3.5 bg-batak-gold text-batak-deep rounded-full font-medium hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+          <i class="fas fa-hourglass-half mr-2"></i>Menuju Hari Bahagia
+        </a>
+        <a href="#acara" class="px-8 py-3.5 border-2 border-white/70 text-white rounded-full font-medium hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
+          <i class="fas fa-calendar-alt mr-2"></i>Lihat Acara
+        </a>
+      </div>
+      
+      <div class="batak-ornament w-64 mx-auto mt-10 opacity-60"></div>
+    </div>
+    
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white/70">
+      <i class="fas fa-chevron-down text-2xl"></i>
+    </div>
+  </section>
+
+  <!-- ========== COUNTDOWN SECTION ========== -->
+  <section id="countdown" class="snap-section py-20 px-6 bg-batak-cream relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-72 h-72 bg-batak-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-batak-red/5 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-5xl mx-auto relative z-10">
+      <div class="text-center mb-12 reveal">
+        <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Menghitung Hari</span>
+        <h2 class="font-batak text-4xl md:text-5xl font-bold mt-2 text-batak-deep">Menuju Janji Suci</h2>
+        <div class="batak-ornament w-40 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 reveal reveal-delay-1">
+        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 text-center shadow-xl border border-batak-gold/20 transform hover:scale-105 transition-transform duration-300">
+          <div class="text-4xl md:text-5xl font-bold text-batak-red" id="days">00</div>
+          <div class="text-sm text-batak-deep/60 mt-1 font-medium tracking-wider">Hari</div>
+        </div>
+        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 text-center shadow-xl border border-batak-gold/20 transform hover:scale-105 transition-transform duration-300">
+          <div class="text-4xl md:text-5xl font-bold text-batak-red" id="hours">00</div>
+          <div class="text-sm text-batak-deep/60 mt-1 font-medium tracking-wider">Jam</div>
+        </div>
+        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 text-center shadow-xl border border-batak-gold/20 transform hover:scale-105 transition-transform duration-300">
+          <div class="text-4xl md:text-5xl font-bold text-batak-red" id="minutes">00</div>
+          <div class="text-sm text-batak-deep/60 mt-1 font-medium tracking-wider">Menit</div>
+        </div>
+        <div class="bg-white/80 backdrop-blur rounded-2xl p-6 text-center shadow-xl border border-batak-gold/20 transform hover:scale-105 transition-transform duration-300">
+          <div class="text-4xl md:text-5xl font-bold text-batak-red" id="seconds">00</div>
+          <div class="text-sm text-batak-deep/60 mt-1 font-medium tracking-wider">Detik</div>
+        </div>
+      </div>
+      
+      <p class="text-center text-batak-deep/70 mt-8 text-sm reveal reveal-delay-2">
+        <i class="fas fa-calendar-check text-batak-gold mr-2"></i>Sabtu, 15 November 2025 · Medan, Sumatera Utara
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== PESTA ADAT SECTION ========== -->
+  <section id="acara" class="snap-section py-20 px-6 bg-gradient-to-b from-batak-cream to-white relative">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-14 reveal">
+        <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Rangkaian Acara</span>
+        <h2 class="font-batak text-4xl md:text-5xl font-bold mt-2 text-batak-deep">Pesta Adat Batak</h2>
+        <div class="batak-ornament w-40 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Kartu 1: Martumpol -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-1 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+          <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=2070&auto=format&fit=crop');">
+            <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <i class="fas fa-ring text-2xl text-batak-gold"></i>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-batak text-2xl font-bold text-batak-deep">Martumpol</h3>
+            <p class="text-batak-deep/60 text-sm mt-1">Pertunangan & Pemberian Tanda Kasih</p>
+            <div class="mt-4 space-y-2 text-sm">
+              <p><i class="fas fa-calendar text-batak-gold w-5"></i> Sabtu, 8 November 2025</p>
+              <p><i class="fas fa-clock text-batak-gold w-5"></i> 10.00 WIB - Selesai</p>
+              <p><i class="fas fa-map-pin text-batak-gold w-5"></i> Rumah Keluarga Romauli, Medan</p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-batak-gold/20 text-xs text-batak-deep/50 italic">
+              "Mangalompoi" — prosesi adat pertunangan Batak.
+            </div>
+          </div>
+        </div>
+        
+        <!-- Kartu 2: Pesta Adat (Puncak) -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-2 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+          <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop');">
+            <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <i class="fas fa-drum text-2xl text-batak-gold"></i>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-batak text-2xl font-bold text-batak-deep">Pesta Adat</h3>
+            <p class="text-batak-deep/60 text-sm mt-1">Pernikahan & Pesta Adat Batak</p>
+            <div class="mt-4 space-y-2 text-sm">
+              <p><i class="fas fa-calendar text-batak-gold w-5"></i> Sabtu, 15 November 2025</p>
+              <p><i class="fas fa-clock text-batak-gold w-5"></i> 09.00 WIB - Selesai</p>
+              <p><i class="fas fa-map-pin text-batak-gold w-5"></i> Gedung Serbaguna, Medan</p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-batak-gold/20 text-xs text-batak-deep/50 italic">
+              Prosesi Mangulosi, Manortor, dan pesta adat.
+            </div>
+          </div>
+        </div>
+        
+        <!-- Kartu 3: Resepsi -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-batak-gold/20 reveal reveal-delay-3 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+          <div class="h-48 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2070&auto=format&fit=crop');">
+            <div class="absolute inset-0 bg-gradient-to-t from-batak-deep/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <i class="fas fa-glass-cheers text-2xl text-batak-gold"></i>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-batak text-2xl font-bold text-batak-deep">Resepsi</h3>
+            <p class="text-batak-deep/60 text-sm mt-1">Makan Malam & Hiburan</p>
+            <div class="mt-4 space-y-2 text-sm">
+              <p><i class="fas fa-calendar text-batak-gold w-5"></i> Sabtu, 15 November 2025</p>
+              <p><i class="fas fa-clock text-batak-gold w-5"></i> 18.00 WIB - 21.00 WIB</p>
+              <p><i class="fas fa-map-pin text-batak-gold w-5"></i> Ballroom Hotel, Medan</p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-batak-gold/20 text-xs text-batak-deep/50 italic">
+              Dengan hiburan musik Batak dan modern.
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-16 text-center reveal reveal-delay-4">
+        <div class="batak-ornament w-32 mx-auto mb-4"></div>
+        <p class="font-batak text-2xl md:text-3xl italic text-batak-deep/80 max-w-3xl mx-auto leading-relaxed">
+          "Togu urat ni sibuk, togu urat ni holong, marsihaholongan ma hita."
+        </p>
+        <p class="text-batak-deep/50 text-sm mt-3">— Pepatah Batak tentang cinta dan persatuan —</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MAP SECTION ========== -->
+  <section id="lokasi" class="snap-section py-20 px-6 bg-white relative">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12 reveal">
+        <span class="text-batak-red tracking-[0.25em] text-xs uppercase font-semibold">Lokasi Acara</span>
+        <h2 class="font-batak text-4xl md:text-5xl font-bold mt-2 text-batak-deep">Peta & Alamat</h2>
+        <div class="batak-ornament w-40 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div class="map-container reveal reveal-delay-1 rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.018425216099!2d98.67288931475397!3d3.595146997425419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f8f5e6b3b3d%3A0x8e4a7c8c8c8c8c8c!2sMedan%2C%20Kota%20Medan%2C%20Sumatera%20Utara!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
+            width="100%" 
+            height="380" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            class="w-full grayscale-[30%] hover:grayscale-0 transition-all duration-700">
+          </iframe>
+        </div>
+        
+        <div class="space-y-6 reveal reveal-delay-2">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-batak-gold/20 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-map-marked-alt text-batak-red text-xl"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-batak-deep text-lg">Gedung Serbaguna</h4>
+              <p class="text-batak-deep/70">Jl. Gatot Subroto No. 123, Medan, Sumatera Utara 20112</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-batak-gold/20 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-clock text-batak-red text-xl"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-batak-deep text-lg">Waktu</h4>
+              <p class="text-batak-deep/70">Sabtu, 15 November 2025 · 09.00 WIB - 21.00 WIB</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-batak-gold/20 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-phone-alt text-batak-red text-xl"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-batak-deep text-lg">Kontak</h4>
+              <p class="text-batak-deep/70">Romauli: 0812-3456-7890 · Binsar: 0812-3456-7891</p>
+            </div>
+          </div>
+          
+          <div class="pt-4">
+            <a href="https://maps.google.com" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-batak-red text-white rounded-full hover:bg-batak-deep transition-colors duration-300 shadow-lg">
+              <i class="fas fa-directions"></i> Buka di Google Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="snap-section py-16 px-6 bg-batak-deep text-white/90 relative">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-batak-gold via-batak-red to-batak-gold"></div>
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="batak-ornament w-48 mx-auto mb-6 opacity-40"></div>
+      <p class="font-batak text-3xl md:text-4xl italic mb-4">"Horas!"</p>
+      <p class="text-white/70 max-w-2xl mx-auto mb-8">
+        Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.
+      </p>
+      <div class="flex justify-center gap-6 text-2xl mb-8">
+        <i class="fab fa-instagram hover:text-batak-gold transition-colors cursor-pointer"></i>
+        <i class="fab fa-whatsapp hover:text-batak-gold transition-colors cursor-pointer"></i>
+        <i class="fab fa-facebook hover:text-batak-gold transition-colors cursor-pointer"></i>
+      </div>
+      <p class="text-sm text-white/40">© 2025 Romauli & Binsar · Undangan Batak Romance</p>
+      <div class="batak-ornament w-32 mx-auto mt-6 opacity-30"></div>
+    </div>
+  </footer>
+
+  <!-- ========== JAVASCRIPT ========== -->
+  <script>
+    (function() {
+      // =============================================
+      // 1. AMBIL NAMA TAMU DARI URL PARAMETER
+      // =============================================
+      function getGuestName() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const guest = urlParams.get('to') || urlParams.get('nama') || urlParams.get('kepada');
+        if (guest) {
+          // Decode dan ganti + dengan spasi
+          return decodeURIComponent(guest.replace(/\+/g, ' '));
+        }
+        return 'Tamu Undangan';
+      }
+
+      document.getElementById('guest-name').textContent = getGuestName();
+      // Update document title dengan nama tamu
+      if (getGuestName() !== 'Tamu Undangan') {
+        document.title = `Undangan untuk ${getGuestName()} · Romauli & Binsar`;
+      }
+
+      // =============================================
+      // 2. EFEK KELOPAK BUNGA JATUH
+      // =============================================
+      function createPetals() {
+        const container = document.getElementById('petals-container');
+        const petalCount = 18;
+        const symbols = ['🌸', '🌺', '✿', '❀', '🏵️', '💮'];
+        
+        for (let i = 0; i < petalCount; i++) {
+          const petal = document.createElement('div');
+          petal.className = 'petal';
+          petal.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          petal.style.left = Math.random() * 100 + '%';
+          petal.style.animationDuration = (8 + Math.random() * 8) + 's';
+          petal.style.animationDelay = (Math.random() * 10) + 's';
+          petal.style.fontSize = (12 + Math.random() * 14) + 'px';
+          petal.style.opacity = 0.3 + Math.random() * 0.5;
+          container.appendChild(petal);
+        }
+      }
+      createPetals();
+
+      // =============================================
+      // 3. BUKA UNDANGAN + PUTAR MUSIK
+      // =============================================
+      const coverPage = document.getElementById('cover-page');
+      const openBtn = document.getElementById('open-invitation');
+      const bgMusic = document.getElementById('bg-music');
+      const musicControl = document.getElementById('music-control');
+      const musicToggle = document.getElementById('music-toggle');
+      const musicIcon = document.getElementById('music-icon');
+      const body = document.body;
+
+      let isMusicPlaying = false;
+
+      // Set volume awal
+      bgMusic.volume = 0.5;
+
+      function playMusic() {
+        bgMusic.play().then(() => {
+          isMusicPlaying = true;
+          musicIcon.className = 'fas fa-music';
+          musicToggle.classList.add('playing');
+        }).catch((error) => {
+          console.log('Autoplay diblokir, user perlu interaksi:', error);
+          // Coba lagi setelah interaksi
+          isMusicPlaying = false;
+          musicIcon.className = 'fas fa-volume-mute';
+          musicToggle.classList.remove('playing');
+        });
+      }
+
+      function pauseMusic() {
+        bgMusic.pause();
+        isMusicPlaying = false;
+        musicIcon.className = 'fas fa-volume-mute';
+        musicToggle.classList.remove('playing');
+      }
+
+      openBtn.addEventListener('click', function() {
+        // 1. Sembunyikan cover
+        coverPage.classList.add('hidden-cover');
+        
+        // 2. Hapus no-scroll dari body
+        body.classList.remove('no-scroll');
+        
+        // 3. Putar musik
+        playMusic();
+        
+        // 4. Tampilkan kontrol musik setelah delay
+        setTimeout(() => {
+          musicControl.classList.remove('hidden-music');
+        }, 800);
+        
+        // 5. Scroll ke section countdown setelah cover hilang
+        setTimeout(() => {
+          const countdownSection = document.getElementById('countdown');
+          if (countdownSection) {
+            countdownSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 1200);
+        
+        // 6. Trigger reveal untuk elemen yang sudah ada di viewport
+        setTimeout(() => {
+          document.querySelectorAll('.reveal').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 100) {
+              el.classList.add('active');
+            }
+          });
+        }, 500);
+      });
+
+      // Toggle musik
+      musicToggle.addEventListener('click', function() {
+        if (isMusicPlaying) {
+          pauseMusic();
+        } else {
+          playMusic();
+        }
+      });
+
+      // =============================================
+      // 4. COUNTDOWN
+      // =============================================
+      const targetDate = new Date('November 15, 2025 09:00:00').getTime();
+      
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+        
+        if (distance < 0) {
+          document.getElementById('days').textContent = '00';
+          document.getElementById('hours').textContent = '00';
+          document.getElementById('minutes').textContent = '00';
+          document.getElementById('seconds').textContent = '00';
+          return;
+        }
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+      }
+      
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      // =============================================
+      // 5. REVEAL ANIMATION ON SCROLL
+      // =============================================
+      const revealElements = document.querySelectorAll('.reveal');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px'
+      });
+      
+      revealElements.forEach(el => observer.observe(el));
+
+      // =============================================
+      // 6. SMOOTH SCROLL ANCHOR
+      // =============================================
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+
+      // =============================================
+      // 7. HANDLE AUDIO ENDED (loop sudah di-set)
+      // =============================================
+      bgMusic.addEventListener('ended', function() {
+        // Karena loop=true, ini tidak akan terpanggil, tapi sebagai fallback
+        if (isMusicPlaying) {
+          bgMusic.currentTime = 0;
+          bgMusic.play();
+        }
+      });
+
+      // =============================================
+      // 8. PAUSE MUSIC SAAT TAB TIDAK AKTIF (opsional)
+      // =============================================
+      // Tidak diimplementasi agar musik tetap berjalan
+      
+    })();
+  </script>
+</body>
+</html>
