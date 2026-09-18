@@ -7,8 +7,8 @@
   <!-- Meta OG -->
   <meta property="og:title" content="Undangan Pernikahan · Jefri & Ani">
   <meta property="og:description" content="Merupakan suatu kehormatan bagi kami apabila Anda berkenan hadir untuk merayakan momen istimewa kami.">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop">
-  <meta property="og:url" content="https://undanganbatak.example.com">
+  <meta property="og:image" content="img/ft222.jpg">
+  <meta property="og:url" content="https://jefrianiwedding.undangandigitalpro.my.id/">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <!-- Tailwind via CDN + custom config -->
@@ -613,10 +613,74 @@
       100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
     }
 
+    /* === ORNAMEN AMPERSAND ESTETIK (VERSI BARU) === */
+    .ampersand-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 14px auto;
+    }
+    .ampersand-ornament .line {
+      display: block;
+      height: 1px;
+      width: 50px;
+      background: linear-gradient(90deg, transparent, #C49A6C 50%, transparent);
+      position: relative;
+    }
+    .ampersand-ornament .line::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #C49A6C;
+      transform: translateY(-50%);
+      opacity: 0.7;
+    }
+    .ampersand-ornament .line-left::after { right: -2px; }
+    .ampersand-ornament .line-right::after { left: -2px; }
+    .ampersand-ornament .amp-symbol {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3.2rem;
+      line-height: 1;
+      background: linear-gradient(135deg, #8B3A3A 0%, #C49A6C 50%, #8B3A3A 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 4px rgba(196, 154, 108, 0.35));
+      animation: ampPulse 3.5s ease-in-out infinite;
+      padding: 0 4px;
+    }
+    .ampersand-ornament .amp-symbol-cover {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.4rem;
+      line-height: 1;
+      background: linear-gradient(135deg, #C49A6C 0%, #F9F3EC 50%, #C49A6C 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 6px rgba(196, 154, 108, 0.5));
+      animation: ampPulse 3.5s ease-in-out infinite;
+      padding: 0 4px;
+    }
+    @keyframes ampPulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(196, 154, 108, 0.35)); }
+      50% { transform: scale(1.06); filter: drop-shadow(0 4px 8px rgba(196, 154, 108, 0.55)); }
+    }
+    .parent-info {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      letter-spacing: 0.02em;
+      line-height: 1.5;
+    }
+
     /* Hormati preferensi reduced motion */
     @media (prefers-reduced-motion: reduce) {
       .petal, .rings-photo-wrap::before, #gift-ball, .music-btn.playing,
-      .sparkle-burst, .cover-content { animation: none !important; }
+      .sparkle-burst, .cover-content, .ampersand-ornament .amp-symbol,
+      .ampersand-ornament .amp-symbol-cover { animation: none !important; }
       .reveal { transition: opacity 0.3s ease !important; transform: none !important; }
     }
   </style>
@@ -671,9 +735,18 @@
         </div>
 
         <p class="text-batak-gold/80 text-sm tracking-widest uppercase mb-2">The Wedding Of</p>
-        <h1 class="font-script text-5xl md:text-6xl text-white mb-2 leading-tight">Jefri Purba</h1>
-        <p class="text-batak-gold text-3xl font-batak mb-2">&</p>
-        <h1 class="font-script text-5xl md:text-6xl text-white mb-6 leading-tight">Ani Damanik</h1>
+        <h1 class="font-script text-5xl md:text-6xl text-white mb-1 leading-tight">Jefri Purba</h1>
+        <p class="text-white/50 text-[11px] md:text-xs italic mb-3 font-batak">Putra dari Bapak (+) Jatiman Purba &amp; Ibu Nurleni br Damanik</p>
+        
+        <!-- Ornamen ampersand estetik (cover) - VERSI BARU -->
+        <div class="ampersand-ornament my-4">
+          <span class="line line-left"></span>
+          <span class="amp-symbol-cover">&amp;</span>
+          <span class="line line-right"></span>
+        </div>
+        
+        <h1 class="font-script text-5xl md:text-6xl text-white mb-1 leading-tight">Ani Damanik</h1>
+        <p class="text-white/50 text-[11px] md:text-xs italic mb-6 font-batak">Putri dari Bapak Sahman Damanik &amp; Ibu Lioni br Pardede</p>
 
         <div class="batak-ornament w-32 mx-auto mb-6 opacity-60"></div>
 
@@ -857,13 +930,26 @@
       
       <!-- Nama Pasangan -->
       <div class="mt-8 reveal reveal-delay-2">
-        <h1 class="font-script text-6xl md:text-8xl text-batak-deep leading-tight mb-2">Jefri Andi Purba</h1>
-        <p class="text-batak-gold text-3xl md:text-4xl font-batak my-2">&</p>
-        <h1 class="font-script text-6xl md:text-8xl text-batak-deep leading-tight">Ani Novita Damanik</h1>
+        <h1 class="font-script text-6xl md:text-8xl text-batak-deep leading-tight mb-1">Jefri Andi Purba</h1>
+        <p class="parent-info text-batak-deep/70 text-sm md:text-base mt-1">
+          Putra dari Bapak (+) Jatiman Purba &amp; Ibu Nurleni br Damanik
+        </p>
+        
+        <!-- Ornamen ampersand estetik (hero) - VERSI BARU -->
+        <div class="ampersand-ornament my-6">
+          <span class="line line-left"></span>
+          <span class="amp-symbol">&amp;</span>
+          <span class="line line-right"></span>
+        </div>
+        
+        <h1 class="font-script text-6xl md:text-8xl text-batak-deep leading-tight mb-1">Ani Novita Damanik</h1>
+        <p class="parent-info text-batak-deep/70 text-sm md:text-base mt-1">
+          Putri dari Bapak Sahlan Damanik &amp; Ibu Lioni br Pardede
+        </p>
       </div>
       
       <p class="text-batak-deep/80 text-base md:text-lg max-w-2xl mx-auto font-light leading-relaxed mt-6 reveal reveal-delay-3">
-        Dengan sukacita, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan kami dalam balutan adat Batak yang sakral.
+        Dengan sukacita, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan kami.
       </p>
       
       <div class="flex flex-wrap gap-4 justify-center mt-8 reveal reveal-delay-4">
@@ -977,6 +1063,7 @@
       </div>
       
       <div class="grid md:grid-cols-2 gap-8">
+        <!-- MAP 1: Martumpol -->
         <div class="reveal reveal-delay-1">
           <div class="mb-4 flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-batak-red/10 flex items-center justify-center">
@@ -995,15 +1082,24 @@
               class="w-full grayscale-[30%] hover:grayscale-0 transition-all duration-700">
             </iframe>
           </div>
-          <div class="mt-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 border border-batak-gold/20">
-            <p class="text-sm text-batak-deep/80">
-              <i class="fas fa-map-marker-alt text-batak-red mr-2"></i>
-              Kediaman Keluarga Mempelai Wanita<br>
-              <span class="text-batak-deep/60 text-xs">Kota Tebing Tinggi</span>
-            </p>
+          <div class="mt-4 flex flex-col sm:flex-row gap-3 items-stretch">
+            <div class="flex-1 bg-white/95 backdrop-blur-sm rounded-2xl p-4 border border-batak-gold/20">
+              <p class="text-sm text-batak-deep/80">
+                <i class="fas fa-map-marker-alt text-batak-red mr-2"></i>
+                Kediaman Keluarga Mempelai Wanita<br>
+                <span class="text-batak-deep/60 text-xs">Kota Tebing Tinggi</span>
+              </p>
+            </div>
+            <a href="https://www.google.com/maps/search/?api=1&query=3%C2%B019'40.1%22N+99%C2%B007'35.2%22E" 
+               target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center justify-center gap-2 px-5 py-4 bg-gradient-to-r from-batak-red to-batak-gold text-white rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap">
+              <i class="fas fa-map-marked-alt"></i>
+              Buka di Google Maps
+            </a>
           </div>
         </div>
         
+        <!-- MAP 2: Pesta Adat -->
         <div class="reveal reveal-delay-2">
           <div class="mb-4 flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-batak-gold/20 flex items-center justify-center">
@@ -1022,12 +1118,20 @@
               class="w-full grayscale-[30%] hover:grayscale-0 transition-all duration-700">
             </iframe>
           </div>
-          <div class="mt-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 border border-batak-gold/20">
-            <p class="text-sm text-batak-deep/80">
-              <i class="fas fa-map-marker-alt text-batak-red mr-2"></i>
-              Kediaman Keluarga Mempelai Pria<br>
-              <span class="text-batak-deep/60 text-xs">Balok Padang, Desa Marubun</span>
-            </p>
+          <div class="mt-4 flex flex-col sm:flex-row gap-3 items-stretch">
+            <div class="flex-1 bg-white/95 backdrop-blur-sm rounded-2xl p-4 border border-batak-gold/20">
+              <p class="text-sm text-batak-deep/80">
+                <i class="fas fa-map-marker-alt text-batak-red mr-2"></i>
+                Kediaman Keluarga Mempelai Pria<br>
+                <span class="text-batak-deep/60 text-xs">Balok Padang, Desa Marubun</span>
+              </p>
+            </div>
+            <a href="https://www.google.com/maps/search/?api=1&query=42HP%2BPP8" 
+               target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center justify-center gap-2 px-5 py-4 bg-gradient-to-r from-batak-red to-batak-gold text-white rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap">
+              <i class="fas fa-map-marked-alt"></i>
+              Buka di Google Maps
+            </a>
           </div>
         </div>
       </div>
