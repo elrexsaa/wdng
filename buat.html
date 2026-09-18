@@ -62,6 +62,12 @@
       box-shadow: 0 0 0 4px rgba(196, 154, 108, 0.15);
       background: white;
     }
+    .form-input[readonly] {
+      background: rgba(249, 243, 236, 0.9);
+      color: #6B5B4F;
+      cursor: not-allowed;
+      border-color: rgba(196, 154, 108, 0.25);
+    }
     .btn-primary {
       background: linear-gradient(135deg, #8B3A3A, #C49A6C);
       color: white;
@@ -205,9 +211,177 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+
+    /* ========================================= */
+    /* LOGIN SCREEN                              */
+    /* ========================================= */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: linear-gradient(135deg, #2D1B13 0%, #4A2E20 50%, #2D1B13 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #login-screen.hidden-login {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .login-card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 28px;
+      padding: 40px 32px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      border: 2px solid #C49A6C;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      right: -40%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(196, 154, 108, 0.15), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .login-card > * { position: relative; z-index: 2; }
+
+    .lock-icon-wrapper {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8B3A3A, #C49A6C);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px -5px rgba(139, 58, 58, 0.4);
+    }
+    .lock-icon-wrapper i {
+      color: white;
+      font-size: 30px;
+    }
+
+    .password-wrapper {
+      position: relative;
+      margin-top: 6px;
+    }
+    .password-wrapper .form-input {
+      padding-right: 48px;
+      text-align: center;
+      letter-spacing: 0.15em;
+      font-weight: 600;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #C49A6C;
+      font-size: 15px;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .toggle-password:hover { color: #8B3A3A; }
+
+    /* Shake animation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+    .shake { animation: shake 0.5s ease; }
+
+    /* Fade in dashboard */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .dashboard-enter { animation: fadeIn 0.6s ease forwards; }
+
+    /* Logout button */
+    .btn-logout {
+      background: rgba(139, 58, 58, 0.1);
+      color: #8B3A3A;
+      border: 1.5px solid rgba(139, 58, 58, 0.3);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-logout:hover {
+      background: #8B3A3A;
+      color: white;
+      border-color: #8B3A3A;
+    }
   </style>
 </head>
 <body class="text-batak-deep antialiased">
+
+  <!-- ========================================= -->
+  <!-- LOGIN SCREEN                              -->
+  <!-- ========================================= -->
+  <div id="login-screen">
+    <div class="login-card" id="login-card">
+      <div class="lock-icon-wrapper">
+        <i class="fas fa-lock"></i>
+      </div>
+      <p class="text-batak-red tracking-[0.3em] text-[10px] uppercase mb-1">Area Terbatas</p>
+      <h1 class="font-script text-4xl text-batak-deep mb-1">Jefri & Ani</h1>
+      <p class="font-batak text-lg text-batak-red italic mb-5">Dashboard Admin</p>
+      <div class="batak-ornament w-32 mx-auto mb-6 opacity-60"></div>
+
+      <p class="text-sm text-batak-deep/70 mb-4">
+        Masukkan password untuk mengakses dashboard
+      </p>
+
+      <div class="password-wrapper">
+        <input 
+          type="password" 
+          id="input-password" 
+          class="form-input" 
+          placeholder="• • • • • • • •"
+          autocomplete="off"
+        >
+        <button type="button" class="toggle-password" id="btn-toggle-password" title="Tampilkan password">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+
+      <p id="login-error" class="text-batak-red text-xs mt-3 hidden">
+        <i class="fas fa-exclamation-circle mr-1"></i>
+        <span id="login-error-text">Password salah!</span>
+      </p>
+
+      <button id="btn-login" class="btn-primary w-full mt-5">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Masuk Dashboard</span>
+      </button>
+
+      <p class="text-[10px] text-batak-deep/40 mt-6">
+        <i class="fas fa-shield-alt mr-1"></i>
+        Halaman ini dilindungi. Hanya admin yang boleh masuk.
+      </p>
+    </div>
+  </div>
 
   <!-- Toast -->
   <div id="toast">
@@ -215,211 +389,228 @@
     <span id="toast-msg">Berhasil!</span>
   </div>
 
-  <!-- Header -->
-  <header class="py-8 px-6">
-    <div class="max-w-6xl mx-auto text-center">
-      <div class="batak-ornament w-48 mx-auto mb-4 opacity-70"></div>
-      <p class="text-batak-red tracking-[0.3em] text-xs uppercase mb-2">Dashboard Admin</p>
-      <h1 class="font-script text-5xl md:text-6xl text-batak-deep mb-2">Generator Link Tamu</h1>
-      <p class="font-batak text-2xl text-batak-red italic">Jefri & Ani</p>
-      <div class="batak-ornament w-32 mx-auto mt-4 opacity-50"></div>
-    </div>
-  </header>
+  <!-- Dashboard Wrapper (hidden until login) -->
+  <div id="dashboard-wrapper" style="display:none;">
 
-  <main class="max-w-6xl mx-auto px-6 pb-20">
-    
-    <!-- Info Banner -->
-    <div class="bg-gradient-to-r from-batak-red/10 to-batak-gold/10 border border-batak-gold/30 rounded-2xl p-5 mb-8">
-      <div class="flex items-start gap-4">
-        <div class="w-10 h-10 rounded-full bg-batak-red/20 flex items-center justify-center flex-shrink-0">
-          <i class="fas fa-info-circle text-batak-red"></i>
-        </div>
-        <div class="text-sm text-batak-deep/80">
-          <p class="font-semibold mb-1">Cara Penggunaan:</p>
-          <ol class="list-decimal list-inside space-y-1 text-xs text-batak-deep/70">
-            <li>Masukkan nama tamu pada form di bawah, lalu klik <b>"Generate Link"</b>.</li>
-            <li>Setelah link muncul, klik <b>"Kirim WhatsApp"</b> untuk otomatis membuka WhatsApp dengan pesan undangan yang siap dikirim.</li>
-            <li>Klik <b>"Download QR"</b> untuk mengunduh QR Code yang bisa dicetak / dibagikan ke tamu.</li>
-            <li>Tamu yang scan QR akan langsung dibawa ke undangan dengan namanya sudah tertulis.</li>
-          </ol>
+    <!-- Header -->
+    <header class="py-8 px-6 relative">
+      <!-- Logout Button -->
+      <div class="absolute top-4 right-4 md:top-6 md:right-6">
+        <button id="btn-logout" class="btn-logout" title="Keluar dari dashboard">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+
+      <div class="max-w-6xl mx-auto text-center">
+        <div class="batak-ornament w-48 mx-auto mb-4 opacity-70"></div>
+        <p class="text-batak-red tracking-[0.3em] text-xs uppercase mb-2">Dashboard Admin</p>
+        <h1 class="font-script text-5xl md:text-6xl text-batak-deep mb-2">Generator Link Tamu</h1>
+        <p class="font-batak text-2xl text-batak-red italic">Jefri & Ani</p>
+        <div class="batak-ornament w-32 mx-auto mt-4 opacity-50"></div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 pb-20">
+      
+      <!-- Info Banner -->
+      <div class="bg-gradient-to-r from-batak-red/10 to-batak-gold/10 border border-batak-gold/30 rounded-2xl p-5 mb-8">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-full bg-batak-red/20 flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-info-circle text-batak-red"></i>
+          </div>
+          <div class="text-sm text-batak-deep/80">
+            <p class="font-semibold mb-1">Cara Penggunaan:</p>
+            <ol class="list-decimal list-inside space-y-1 text-xs text-batak-deep/70">
+              <li>Masukkan nama tamu pada form di bawah, lalu klik <b>"Generate Link"</b>.</li>
+              <li>Setelah link muncul, klik <b>"Kirim WhatsApp"</b> untuk otomatis membuka WhatsApp dengan pesan undangan yang siap dikirim.</li>
+              <li>Klik <b>"Download QR"</b> untuk mengunduh QR Code yang bisa dicetak / dibagikan ke tamu.</li>
+              <li>Tamu yang scan QR akan langsung dibawa ke undangan dengan namanya sudah tertulis.</li>
+            </ol>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="grid lg:grid-cols-2 gap-8">
-      
-      <!-- LEFT: Form Input -->
-      <div class="space-y-6">
+      <div class="grid lg:grid-cols-2 gap-8">
         
-        <!-- Form Generate -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-full bg-batak-gold/20 flex items-center justify-center">
-              <i class="fas fa-user-plus text-batak-red"></i>
-            </div>
-            <div>
-              <h2 class="font-batak text-2xl font-bold text-batak-deep">Tambah Tamu</h2>
-              <p class="text-batak-deep/50 text-xs">Buat link personal untuk tamu</p>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-batak-deep mb-2">
-                <i class="fas fa-user text-batak-gold mr-2"></i>Nama Tamu <span class="text-batak-red">*</span>
-              </label>
-              <input type="text" id="input-name" class="form-input" placeholder="Contoh: Bapak Andi Siregar" autocomplete="off">
-              <p class="text-xs text-batak-deep/40 mt-1">
-                <i class="fas fa-lightbulb mr-1"></i>Tips: Gunakan gelar (Bapak/Ibu/Saudara) untuk kesan lebih personal.
-              </p>
+        <!-- LEFT: Form Input -->
+        <div class="space-y-6">
+          
+          <!-- Form Generate -->
+          <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-full bg-batak-gold/20 flex items-center justify-center">
+                <i class="fas fa-user-plus text-batak-red"></i>
+              </div>
+              <div>
+                <h2 class="font-batak text-2xl font-bold text-batak-deep">Tambah Tamu</h2>
+                <p class="text-batak-deep/50 text-xs">Buat link personal untuk tamu</p>
+              </div>
             </div>
 
-            <div>
-              <label class="block text-sm font-medium text-batak-deep mb-2">
-                <i class="fas fa-phone text-batak-gold mr-2"></i>Nomor WhatsApp (opsional)
-              </label>
-              <input type="tel" id="input-phone" class="form-input" placeholder="Contoh: 08123456789">
-              <p class="text-xs text-batak-deep/40 mt-1">
-                <i class="fas fa-info-circle mr-1"></i>Jika diisi, tombol "Kirim WhatsApp" akan langsung ke nomor ini.
-              </p>
-            </div>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-batak-deep mb-2">
+                  <i class="fas fa-user text-batak-gold mr-2"></i>Nama Tamu <span class="text-batak-red">*</span>
+                </label>
+                <input type="text" id="input-name" class="form-input" placeholder="Contoh: Bapak Andi Siregar" autocomplete="off">
+                <p class="text-xs text-batak-deep/40 mt-1">
+                  <i class="fas fa-lightbulb mr-1"></i>Tips: Gunakan gelar (Bapak/Ibu/Saudara) untuk kesan lebih personal.
+                </p>
+              </div>
 
-            <div>
-              <label class="block text-sm font-medium text-batak-deep mb-2">
-                <i class="fas fa-link text-batak-gold mr-2"></i>URL Undangan (base URL)
-              </label>
-              <input type="text" id="input-base-url" class="form-input" placeholder="https://domainanda.com/undangan/index.html">
-              <p class="text-xs text-batak-deep/40 mt-1">
-                <i class="fas fa-info-circle mr-1"></i>Biarkan default jika file berada di folder yang sama.
-              </p>
-            </div>
+              <div>
+                <label class="block text-sm font-medium text-batak-deep mb-2">
+                  <i class="fas fa-phone text-batak-gold mr-2"></i>Nomor WhatsApp (opsional)
+                </label>
+                <input type="tel" id="input-phone" class="form-input" placeholder="Contoh: 08123456789">
+                <p class="text-xs text-batak-deep/40 mt-1">
+                  <i class="fas fa-info-circle mr-1"></i>Jika diisi, tombol "Kirim WhatsApp" akan langsung ke nomor ini.
+                </p>
+              </div>
 
-            <button id="btn-generate" class="btn-primary w-full">
-              <i class="fas fa-magic"></i>
-              <span>Generate Link Undangan</span>
-            </button>
-          </div>
-        </div>
+              <div>
+                <label class="block text-sm font-medium text-batak-deep mb-2">
+                  <i class="fas fa-link text-batak-gold mr-2"></i>URL Undangan (base URL)
+                  <span class="ml-2 badge bg-batak-gold/15 text-batak-red">
+                    <i class="fas fa-lock text-[8px]"></i> Terkunci
+                  </span>
+                </label>
+                <input type="text" id="input-base-url" class="form-input" readonly tabindex="-1">
+                <p class="text-xs text-batak-deep/40 mt-1">
+                  <i class="fas fa-shield-alt mr-1"></i>URL sudah ditetapkan oleh admin dan tidak dapat diubah.
+                </p>
+              </div>
 
-        <!-- Preview Card -->
-        <div id="preview-section" class="hidden">
-          <div class="guest-card">
-            <div class="guest-card-content text-center">
-              <p class="text-batak-gold/80 text-xs tracking-[0.3em] uppercase mb-2">Undangan Untuk</p>
-              <h3 id="preview-name" class="font-script text-4xl md:text-5xl text-white mb-3">Nama Tamu</h3>
-              <div class="batak-ornament w-32 mx-auto mb-3 opacity-60"></div>
-              <p class="text-white/70 text-xs">
-                <i class="fas fa-calendar-alt text-batak-gold mr-1"></i>
-                Jum'at, 09 Oktober 2026 · Silapu, Kec. Sipispis
-              </p>
-            </div>
-          </div>
-
-          <!-- Generated Link -->
-          <div class="bg-white rounded-2xl p-5 shadow-lg border border-batak-gold/20 mt-4">
-            <label class="block text-xs font-semibold text-batak-deep/60 uppercase tracking-wider mb-2">
-              <i class="fas fa-link text-batak-gold mr-1"></i>Link Undangan
-            </label>
-            <div class="flex gap-2">
-              <input type="text" id="output-link" class="form-input text-xs font-mono" readonly>
-              <button id="btn-copy-link" class="btn-secondary whitespace-nowrap px-4">
-                <i class="fas fa-copy"></i>
+              <button id="btn-generate" class="btn-primary w-full">
+                <i class="fas fa-magic"></i>
+                <span>Generate Link Undangan</span>
               </button>
             </div>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="grid grid-cols-2 gap-3 mt-4">
-            <button id="btn-whatsapp" class="btn-primary">
-              <i class="fab fa-whatsapp"></i>
-              <span>Kirim WhatsApp</span>
-            </button>
-            <button id="btn-download-qr" class="btn-secondary">
-              <i class="fas fa-download"></i>
-              <span>Download QR</span>
-            </button>
-          </div>
-
-          <!-- WhatsApp Message Preview -->
-          <div class="bg-green-50 border border-green-200 rounded-2xl p-5 mt-4">
-            <div class="flex items-center gap-2 mb-3">
-              <i class="fab fa-whatsapp text-green-600 text-xl"></i>
-              <p class="font-semibold text-green-800 text-sm">Preview Pesan WhatsApp</p>
-            </div>
-            <div id="wa-preview" class="bg-white rounded-xl p-4 text-xs text-batak-deep/80 whitespace-pre-line leading-relaxed border border-green-100 max-h-64 overflow-y-auto custom-scroll"></div>
-            <button id="btn-copy-message" class="text-green-700 text-xs font-medium mt-3 hover:underline">
-              <i class="fas fa-copy mr-1"></i>Salin pesan saja
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- RIGHT: QR Code & Guest List -->
-      <div class="space-y-6">
-        
-        <!-- QR Code Display -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-full bg-batak-red/10 flex items-center justify-center">
-              <i class="fas fa-qrcode text-batak-red"></i>
-            </div>
-            <div>
-              <h2 class="font-batak text-2xl font-bold text-batak-deep">QR Code Tamu</h2>
-              <p class="text-batak-deep/50 text-xs">Scan untuk membuka undangan</p>
-            </div>
-          </div>
-
-          <div id="qr-section" class="text-center">
-            <div id="qr-placeholder" class="py-12 text-batak-deep/30">
-              <i class="fas fa-qrcode text-6xl mb-4 opacity-40"></i>
-              <p class="text-sm">QR Code akan muncul setelah generate link</p>
-            </div>
-            <div id="qr-display" class="hidden">
-              <div class="qr-container">
-                <div id="qrcode"></div>
+          <!-- Preview Card -->
+          <div id="preview-section" class="hidden">
+            <div class="guest-card">
+              <div class="guest-card-content text-center">
+                <p class="text-batak-gold/80 text-xs tracking-[0.3em] uppercase mb-2">Undangan Untuk</p>
+                <h3 id="preview-name" class="font-script text-4xl md:text-5xl text-white mb-3">Nama Tamu</h3>
+                <div class="batak-ornament w-32 mx-auto mb-3 opacity-60"></div>
+                <p class="text-white/70 text-xs">
+                  <i class="fas fa-calendar-alt text-batak-gold mr-1"></i>
+                  Jum'at, 09 Oktober 2026 · Silapu, Kec. Sipispis
+                </p>
               </div>
-              <p id="qr-label" class="text-xs text-batak-deep/60 mt-3 italic">Scan untuk membuka undangan</p>
+            </div>
+
+            <!-- Generated Link -->
+            <div class="bg-white rounded-2xl p-5 shadow-lg border border-batak-gold/20 mt-4">
+              <label class="block text-xs font-semibold text-batak-deep/60 uppercase tracking-wider mb-2">
+                <i class="fas fa-link text-batak-gold mr-1"></i>Link Undangan
+              </label>
+              <div class="flex gap-2">
+                <input type="text" id="output-link" class="form-input text-xs font-mono" readonly>
+                <button id="btn-copy-link" class="btn-secondary whitespace-nowrap px-4">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-3 mt-4">
+              <button id="btn-whatsapp" class="btn-primary">
+                <i class="fab fa-whatsapp"></i>
+                <span>Kirim WhatsApp</span>
+              </button>
+              <button id="btn-download-qr" class="btn-secondary">
+                <i class="fas fa-download"></i>
+                <span>Download QR</span>
+              </button>
+            </div>
+
+            <!-- WhatsApp Message Preview -->
+            <div class="bg-green-50 border border-green-200 rounded-2xl p-5 mt-4">
+              <div class="flex items-center gap-2 mb-3">
+                <i class="fab fa-whatsapp text-green-600 text-xl"></i>
+                <p class="font-semibold text-green-800 text-sm">Preview Pesan WhatsApp</p>
+              </div>
+              <div id="wa-preview" class="bg-white rounded-xl p-4 text-xs text-batak-deep/80 whitespace-pre-line leading-relaxed border border-green-100 max-h-64 overflow-y-auto custom-scroll"></div>
+              <button id="btn-copy-message" class="text-green-700 text-xs font-medium mt-3 hover:underline">
+                <i class="fas fa-copy mr-1"></i>Salin pesan saja
+              </button>
             </div>
           </div>
+
         </div>
 
-        <!-- Guest List -->
-        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-batak-gold/20 flex items-center justify-center">
-                <i class="fas fa-users text-batak-gold"></i>
+        <!-- RIGHT: QR Code & Guest List -->
+        <div class="space-y-6">
+          
+          <!-- QR Code Display -->
+          <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-full bg-batak-red/10 flex items-center justify-center">
+                <i class="fas fa-qrcode text-batak-red"></i>
               </div>
               <div>
-                <h2 class="font-batak text-2xl font-bold text-batak-deep">Daftar Tamu</h2>
-                <p class="text-batak-deep/50 text-xs"><span id="guest-count">0</span> tamu terdaftar</p>
+                <h2 class="font-batak text-2xl font-bold text-batak-deep">QR Code Tamu</h2>
+                <p class="text-batak-deep/50 text-xs">Scan untuk membuka undangan</p>
               </div>
             </div>
-            <button id="btn-clear-all" class="text-batak-red text-xs hover:underline">
-              <i class="fas fa-trash mr-1"></i>Hapus Semua
-            </button>
+
+            <div id="qr-section" class="text-center">
+              <div id="qr-placeholder" class="py-12 text-batak-deep/30">
+                <i class="fas fa-qrcode text-6xl mb-4 opacity-40"></i>
+                <p class="text-sm">QR Code akan muncul setelah generate link</p>
+              </div>
+              <div id="qr-display" class="hidden">
+                <div class="qr-container">
+                  <div id="qrcode"></div>
+                </div>
+                <p id="qr-label" class="text-xs text-batak-deep/60 mt-3 italic">Scan untuk membuka undangan</p>
+              </div>
+            </div>
           </div>
 
-          <div id="guest-list" class="space-y-2 max-h-96 overflow-y-auto custom-scroll pr-1">
-            <p class="text-center text-batak-deep/40 text-sm py-8">
-              <i class="fas fa-inbox text-3xl mb-2 block opacity-40"></i>
-              Belum ada tamu terdaftar
-            </p>
+          <!-- Guest List -->
+          <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-batak-gold/20">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-batak-gold/20 flex items-center justify-center">
+                  <i class="fas fa-users text-batak-gold"></i>
+                </div>
+                <div>
+                  <h2 class="font-batak text-2xl font-bold text-batak-deep">Daftar Tamu</h2>
+                  <p class="text-batak-deep/50 text-xs"><span id="guest-count">0</span> tamu terdaftar</p>
+                </div>
+              </div>
+              <button id="btn-clear-all" class="text-batak-red text-xs hover:underline">
+                <i class="fas fa-trash mr-1"></i>Hapus Semua
+              </button>
+            </div>
+
+            <div id="guest-list" class="space-y-2 max-h-96 overflow-y-auto custom-scroll pr-1">
+              <p class="text-center text-batak-deep/40 text-sm py-8">
+                <i class="fas fa-inbox text-3xl mb-2 block opacity-40"></i>
+                Belum ada tamu terdaftar
+              </p>
+            </div>
           </div>
+
         </div>
 
       </div>
 
-    </div>
+    </main>
 
-  </main>
+    <!-- Footer -->
+    <footer class="py-8 text-center text-batak-deep/50 text-xs">
+      <div class="batak-ornament w-32 mx-auto mb-4 opacity-40"></div>
+      <p>© 2026 Undangan Digital · Generator Link Tamu · By RexsaIT</p>
+    </footer>
 
-  <!-- Footer -->
-  <footer class="py-8 text-center text-batak-deep/50 text-xs">
-    <div class="batak-ornament w-32 mx-auto mb-4 opacity-40"></div>
-    <p>© 2026 Undangan Digital · Generator Link Tamu · By RexsaIT</p>
-  </footer>
+  </div>
+  <!-- /Dashboard Wrapper -->
 
   <script>
     (function() {
@@ -429,7 +620,13 @@
       // CONFIG
       // =============================================
       const STORAGE_KEY = 'wedding_guest_list_jefri_ani';
-      const DEFAULT_BASE_URL = window.location.origin + window.location.pathname.replace('generator.html', 'index.html');
+      const AUTH_KEY = 'wedding_dashboard_auth_jefri_ani';
+
+      // 🔐 PASSWORD DASHBOARD — GANTI DI SINI
+      const DASHBOARD_PASSWORD = 'JA2026';
+
+      // Base URL tetap — tidak dapat diubah oleh user
+      const DEFAULT_BASE_URL = 'https://jefrianiwedding.undangandigitalpro.my.id/';
 
       // =============================================
       // STATE
@@ -438,7 +635,20 @@
       let currentGuest = null;
 
       // =============================================
-      // DOM ELEMENTS
+      // DOM: LOGIN
+      // =============================================
+      const loginScreen = document.getElementById('login-screen');
+      const loginCard = document.getElementById('login-card');
+      const inputPassword = document.getElementById('input-password');
+      const btnLogin = document.getElementById('btn-login');
+      const btnTogglePassword = document.getElementById('btn-toggle-password');
+      const loginError = document.getElementById('login-error');
+      const loginErrorText = document.getElementById('login-error-text');
+      const dashboardWrapper = document.getElementById('dashboard-wrapper');
+      const btnLogout = document.getElementById('btn-logout');
+
+      // =============================================
+      // DOM: DASHBOARD
       // =============================================
       const inputName = document.getElementById('input-name');
       const inputPhone = document.getElementById('input-phone');
@@ -461,8 +671,130 @@
       const guestCount = document.getElementById('guest-count');
       const btnClearAll = document.getElementById('btn-clear-all');
 
-      // Set default base URL
-      inputBaseUrl.value = DEFAULT_BASE_URL;
+      // =============================================
+      // LOGIN LOGIC
+      // =============================================
+
+      // Cek apakah sudah login sebelumnya (session)
+      function isAuthenticated() {
+        try {
+          return sessionStorage.getItem(AUTH_KEY) === 'true';
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function setAuthenticated(val) {
+        try {
+          if (val) {
+            sessionStorage.setItem(AUTH_KEY, 'true');
+          } else {
+            sessionStorage.removeItem(AUTH_KEY);
+          }
+        } catch (e) { /* ignore */ }
+      }
+
+      function showDashboard() {
+        loginScreen.classList.add('hidden-login');
+        dashboardWrapper.style.display = 'block';
+        dashboardWrapper.classList.add('dashboard-enter');
+
+        // Init dashboard setelah login
+        initDashboard();
+      }
+
+      function showLogin() {
+        loginScreen.classList.remove('hidden-login');
+        dashboardWrapper.style.display = 'none';
+        dashboardWrapper.classList.remove('dashboard-enter');
+        inputPassword.value = '';
+        loginError.classList.add('hidden');
+        setTimeout(() => inputPassword.focus(), 200);
+      }
+
+      function attemptLogin() {
+        const entered = inputPassword.value;
+
+        if (!entered) {
+          loginErrorText.textContent = 'Password tidak boleh kosong!';
+          loginError.classList.remove('hidden');
+          triggerShake();
+          inputPassword.focus();
+          return;
+        }
+
+        if (entered === DASHBOARD_PASSWORD) {
+          // Sukses
+          setAuthenticated(true);
+          loginError.classList.add('hidden');
+
+          // Loading state
+          const originalHTML = btnLogin.innerHTML;
+          btnLogin.innerHTML = '<div class="spinner"></div><span>Memverifikasi...</span>';
+          btnLogin.disabled = true;
+
+          setTimeout(() => {
+            btnLogin.innerHTML = originalHTML;
+            btnLogin.disabled = false;
+            showDashboard();
+          }, 500);
+        } else {
+          // Gagal
+          loginErrorText.textContent = 'Password salah! Coba lagi.';
+          loginError.classList.remove('hidden');
+          triggerShake();
+          inputPassword.value = '';
+          inputPassword.focus();
+        }
+      }
+
+      function triggerShake() {
+        loginCard.classList.add('shake');
+        setTimeout(() => loginCard.classList.remove('shake'), 500);
+      }
+
+      // Toggle show/hide password
+      btnTogglePassword.addEventListener('click', function() {
+        const type = inputPassword.type === 'password' ? 'text' : 'password';
+        inputPassword.type = type;
+
+        const icon = this.querySelector('i');
+        if (type === 'text') {
+          icon.className = 'fas fa-eye-slash';
+          this.title = 'Sembunyikan password';
+        } else {
+          icon.className = 'fas fa-eye';
+          this.title = 'Tampilkan password';
+        }
+        inputPassword.focus();
+      });
+
+      // Login button
+      btnLogin.addEventListener('click', attemptLogin);
+
+      // Enter key on password
+      inputPassword.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          attemptLogin();
+        }
+      });
+
+      // Clear error saat mulai mengetik
+      inputPassword.addEventListener('input', function() {
+        if (!loginError.classList.contains('hidden')) {
+          loginError.classList.add('hidden');
+        }
+      });
+
+      // Logout button
+      btnLogout.addEventListener('click', function() {
+        if (confirm('Yakin ingin keluar dari dashboard?')) {
+          setAuthenticated(false);
+          showLogin();
+          showToast('Berhasil logout', 'success');
+        }
+      });
 
       // =============================================
       // TOAST
@@ -507,7 +839,7 @@
       // HELPER: Build link
       // =============================================
       function buildGuestLink(name) {
-        const baseUrl = inputBaseUrl.value.trim() || DEFAULT_BASE_URL;
+        const baseUrl = DEFAULT_BASE_URL;
         const encodedName = encodeURIComponent(name);
         const separator = baseUrl.includes('?') ? '&' : '?';
         return `${baseUrl}${separator}to=${encodedName}`;
@@ -555,7 +887,6 @@ Salam hangat,
       // QR CODE GENERATOR
       // =============================================
       function generateQR(link) {
-        // Clear previous
         qrcodeDiv.innerHTML = '';
         
         try {
@@ -588,7 +919,6 @@ Salam hangat,
           return;
         }
 
-        // Create a nice download canvas with padding + name label
         const downloadCanvas = document.createElement('canvas');
         const ctx = downloadCanvas.getContext('2d');
         const qrSize = 400;
@@ -598,25 +928,20 @@ Salam hangat,
         downloadCanvas.width = qrSize + (padding * 2);
         downloadCanvas.height = qrSize + (padding * 2) + labelHeight;
         
-        // Background
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, downloadCanvas.width, downloadCanvas.height);
         
-        // Border
         ctx.strokeStyle = '#C49A6C';
         ctx.lineWidth = 6;
         ctx.strokeRect(3, 3, downloadCanvas.width - 6, downloadCanvas.height - 6);
         
-        // Inner border
         ctx.strokeStyle = '#8B3A3A';
         ctx.lineWidth = 1;
         ctx.strokeRect(10, 10, downloadCanvas.width - 20, downloadCanvas.height - 20);
         
-        // Draw QR
         const sourceCanvas = canvas || img;
         ctx.drawImage(sourceCanvas, padding, padding, qrSize, qrSize);
         
-        // Text label
         ctx.fillStyle = '#2D1B13';
         ctx.font = 'bold 20px "Cormorant Garamond", serif';
         ctx.textAlign = 'center';
@@ -629,7 +954,6 @@ Salam hangat,
         ctx.fillStyle = '#C49A6C';
         ctx.fillText('Undangan Digital · Jefri Purba & Ani Br Damanik · 09.10.2026', downloadCanvas.width / 2, labelY + 26);
         
-        // Download
         try {
           const dataURL = downloadCanvas.toDataURL('image/png');
           const link = document.createElement('a');
@@ -680,7 +1004,6 @@ Salam hangat,
           </div>
         `).join('');
 
-        // Attach listeners
         guestList.querySelectorAll('.btn-load-guest').forEach(btn => {
           btn.addEventListener('click', () => {
             const idx = parseInt(btn.dataset.index);
@@ -725,14 +1048,11 @@ Salam hangat,
         outputLink.value = link;
         previewSection.classList.remove('hidden');
         
-        // Generate QR
         generateQR(link);
         
-        // Preview WA message
         const msg = buildWhatsAppMessage(guest.name, link);
         waPreview.textContent = msg;
         
-        // Scroll to preview
         previewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
@@ -749,7 +1069,6 @@ Salam hangat,
           return;
         }
         
-        // Check duplicate
         const existing = guests.find(g => g.name.toLowerCase() === name.toLowerCase());
         if (existing) {
           if (!confirm(`Tamu "${name}" sudah terdaftar. Tetap tambahkan?`)) {
@@ -757,7 +1076,6 @@ Salam hangat,
           }
         }
         
-        // Loading state
         const originalHTML = btnGenerate.innerHTML;
         btnGenerate.innerHTML = '<div class="spinner"></div><span>Memproses...</span>';
         btnGenerate.disabled = true;
@@ -775,7 +1093,6 @@ Salam hangat,
           renderGuestList();
           loadGuestToPreview(guest);
           
-          // Reset form
           inputName.value = '';
           inputPhone.value = '';
           
@@ -786,7 +1103,6 @@ Salam hangat,
         }, 400);
       });
 
-      // Enter key support
       inputName.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -795,15 +1111,12 @@ Salam hangat,
       });
 
       // =============================================
-      // COPY LINK
+      // COPY
       // =============================================
       btnCopyLink.addEventListener('click', function() {
         copyToClipboard(outputLink.value, 'Link berhasil disalin!');
       });
 
-      // =============================================
-      // COPY MESSAGE
-      // =============================================
       btnCopyMessage.addEventListener('click', function() {
         if (!currentGuest) return;
         const link = buildGuestLink(currentGuest.name);
@@ -811,9 +1124,6 @@ Salam hangat,
         copyToClipboard(msg, 'Pesan berhasil disalin!');
       });
 
-      // =============================================
-      // COPY HELPER
-      // =============================================
       function copyToClipboard(text, successMsg) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(() => {
@@ -895,13 +1205,35 @@ Salam hangat,
       });
 
       // =============================================
-      // INIT
+      // DASHBOARD INIT (dipanggil setelah login)
       // =============================================
-      loadGuests();
-      renderGuestList();
+      let dashboardInitialized = false;
+      function initDashboard() {
+        // Set base URL terkunci
+        inputBaseUrl.value = DEFAULT_BASE_URL;
+        inputBaseUrl.setAttribute('readonly', 'readonly');
+        inputBaseUrl.setAttribute('aria-readonly', 'true');
 
-      // Auto-focus name input
-      setTimeout(() => inputName.focus(), 300);
+        // Load guests hanya sekali
+        if (!dashboardInitialized) {
+          loadGuests();
+          renderGuestList();
+          dashboardInitialized = true;
+        } else {
+          renderGuestList();
+        }
+
+        setTimeout(() => inputName.focus(), 300);
+      }
+
+      // =============================================
+      // BOOT
+      // =============================================
+      if (isAuthenticated()) {
+        showDashboard();
+      } else {
+        showLogin();
+      }
 
     })();
   </script>
