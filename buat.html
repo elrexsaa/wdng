@@ -15,6 +15,7 @@
             'sans': ['"Inter"', 'sans-serif'],
             'script': ['"Great Vibes"', 'cursive'],
             'playfair': ['"Playfair Display"', 'serif'],
+            'cormorant': ['"Cormorant Garamond"', 'serif'],
           },
           colors: {
             'batak-gold': '#C49A6C',
@@ -29,7 +30,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <!-- QRCode.js -->
@@ -390,8 +391,8 @@
         <i class="fas fa-lock"></i>
       </div>
       <p class="text-batak-red tracking-[0.3em] text-[10px] uppercase mb-1">Area Terbatas</p>
-      <h1 class="font-script text-4xl text-batak-deep mb-1">Jefri & Ani</h1>
-      <p class="font-batak text-lg text-batak-red italic mb-5">Dashboard Admin</p>
+      <h1 class="font-playfair text-3xl font-bold text-batak-deep mb-1">Jefri & Ani</h1>
+      <p class="font-cormorant text-lg text-batak-red italic mb-5">Dashboard Admin</p>
       <div class="batak-ornament w-32 mx-auto mb-6 opacity-60"></div>
 
       <p class="text-sm text-batak-deep/70 mb-4">
@@ -456,7 +457,7 @@
         <div class="batak-ornament w-48 mx-auto mb-4 opacity-70"></div>
         <p class="text-batak-red tracking-[0.3em] text-xs uppercase mb-2">Dashboard Admin</p>
         <h1 class="font-script text-5xl md:text-6xl text-batak-deep mb-2">Generator Link Tamu</h1>
-        <p class="font-batak text-2xl text-batak-red italic">Jefri & Ani</p>
+        <p class="font-playfair text-2xl text-batak-red italic font-semibold">Jefri & Ani</p>
         <div class="batak-ornament w-32 mx-auto mt-4 opacity-50"></div>
       </div>
     </header>
@@ -473,7 +474,7 @@
             <p class="font-semibold mb-1">Cara Penggunaan:</p>
             <ol class="list-decimal list-inside space-y-1 text-xs text-batak-deep/70">
               <li>Masukkan nama tamu pada form di bawah, lalu klik <b>"Generate Link"</b>.</li>
-              <li>Setelah link muncul, klik <b>"Kirim WhatsApp + Gambar"</b> untuk otomatis mengunduh gambar undangan & membuka WhatsApp.</li>
+              <li>Setelah link muncul, klik <b>"Kirim WhatsApp"</b> untuk otomatis mengunduh gambar undangan & membuka WhatsApp.</li>
               <li>Di WhatsApp, <b>attach gambar</b> yang baru saja terunduh, lalu kirim.</li>
               <li>Klik <b>"Download QR"</b> untuk mengunduh QR Code saja (tanpa kartu undangan).</li>
             </ol>
@@ -493,7 +494,7 @@
                 <i class="fas fa-user-plus text-batak-red"></i>
               </div>
               <div>
-                <h2 class="font-batak text-2xl font-bold text-batak-deep">Tambah Tamu</h2>
+                <h2 class="font-playfair text-2xl font-bold text-batak-deep">Tambah Tamu</h2>
                 <p class="text-batak-deep/50 text-xs">Buat link personal untuk tamu</p>
               </div>
             </div>
@@ -543,8 +544,8 @@
           <div id="preview-section" class="hidden">
             <div class="guest-card">
               <div class="guest-card-content text-center">
-                <p class="text-batak-gold/80 text-xs tracking-[0.3em] uppercase mb-2">Undangan Untuk</p>
-                <h3 id="preview-name" class="font-script text-4xl md:text-5xl text-white mb-3">Nama Tamu</h3>
+                <p class="text-batak-gold/80 text-xs tracking-[0.3em] uppercase mb-3">Undangan Untuk</p>
+                <h3 id="preview-name" class="font-playfair text-3xl md:text-4xl font-bold text-white mb-3 leading-tight">Nama Tamu</h3>
                 <div class="batak-ornament w-32 mx-auto mb-3 opacity-60"></div>
                 <p class="text-white/70 text-xs">
                   <i class="fas fa-calendar-alt text-batak-gold mr-1"></i>
@@ -609,7 +610,7 @@
                 <i class="fas fa-qrcode text-batak-red"></i>
               </div>
               <div>
-                <h2 class="font-batak text-2xl font-bold text-batak-deep">QR Code Tamu</h2>
+                <h2 class="font-playfair text-2xl font-bold text-batak-deep">QR Code Tamu</h2>
                 <p class="text-batak-deep/50 text-xs">Scan untuk membuka undangan</p>
               </div>
             </div>
@@ -636,7 +637,7 @@
                   <i class="fas fa-users text-batak-gold"></i>
                 </div>
                 <div>
-                  <h2 class="font-batak text-2xl font-bold text-batak-deep">Daftar Tamu</h2>
+                  <h2 class="font-playfair text-2xl font-bold text-batak-deep">Daftar Tamu</h2>
                   <p class="text-batak-deep/50 text-xs"><span id="guest-count">0</span> tamu terdaftar</p>
                 </div>
               </div>
@@ -697,7 +698,7 @@
       // =============================================
       let guests = [];
       let currentGuest = null;
-      let lastGeneratedImage = null; // dataURL gambar undangan
+      let lastGeneratedImage = null;
 
       // =============================================
       // DOM: LOGIN
@@ -943,6 +944,38 @@ Salam hangat,
       }
 
       // =============================================
+      // HELPER: canvas to Blob
+      // =============================================
+      function canvasToBlob(canvas) {
+        return new Promise((resolve) => {
+          canvas.toBlob((blob) => resolve(blob), 'image/png');
+        });
+      }
+
+      // =============================================
+      // HELPER: dataURL to File
+      // =============================================
+      function dataURLtoFile(dataURL, filename) {
+        const arr = dataURL.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+      }
+
+      // =============================================
+      // HELPER: Build File name
+      // =============================================
+      function buildImageFileName(guestName) {
+        const safeName = guestName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        return `undangan-${safeName}.png`;
+      }
+
+      // =============================================
       // HELPER: Wrap text on canvas
       // =============================================
       function wrapText(ctx, text, maxWidth) {
@@ -1032,7 +1065,7 @@ Salam hangat,
             drawCorner(W - 60, H - 60, -1, -1);
 
             // ============================================
-            // TEXT CONTENT (y-coordinate tracker)
+            // TEXT CONTENT
             // ============================================
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -1067,9 +1100,9 @@ Salam hangat,
             ctx.fillStyle = 'rgba(196, 154, 108, 0.8)';
             ctx.fillText('The Wedding of', W / 2, y);
 
-            // ---------- Nama Pengantin (SCRIPT) ----------
-            y += 80;
-            ctx.font = '400 84px "Great Vibes", cursive';
+            // ---------- Nama Pengantin (Playfair Display Bold) ----------
+            y += 75;
+            ctx.font = '700 56px "Playfair Display", serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.shadowColor = 'rgba(196, 154, 108, 0.5)';
             ctx.shadowBlur = 20;
@@ -1077,13 +1110,13 @@ Salam hangat,
             ctx.shadowBlur = 0;
 
             // Ampersand
-            y += 70;
-            ctx.font = '400 56px "Great Vibes", cursive';
+            y += 65;
+            ctx.font = 'italic 400 44px "Playfair Display", serif';
             ctx.fillStyle = '#C49A6C';
             ctx.fillText('&', W / 2, y);
 
-            y += 70;
-            ctx.font = '400 84px "Great Vibes", cursive';
+            y += 65;
+            ctx.font = '700 56px "Playfair Display", serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.shadowColor = 'rgba(196, 154, 108, 0.5)';
             ctx.shadowBlur = 20;
@@ -1091,7 +1124,7 @@ Salam hangat,
             ctx.shadowBlur = 0;
 
             // ---------- Ornamen divider ----------
-            y += 60;
+            y += 55;
             ctx.strokeStyle = 'rgba(196, 154, 108, 0.6)';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
@@ -1123,18 +1156,17 @@ Salam hangat,
             ctx.fillText('UNDANGAN UNTUK', W / 2, boxY + 32);
             ctx.letterSpacing = '0px';
 
-            // Nama tamu (SCRIPT BESAR)
+            // Nama tamu (Playfair Display Bold — auto-shrink jika panjang)
             const guestNameY = boxY + 88;
-            ctx.font = '400 52px "Great Vibes", cursive';
-            ctx.fillStyle = '#FFFFFF';
-
-            // Auto-shrink jika nama panjang
-            let fontSize = 52;
+            let fontSize = 38;
             const maxNameWidth = boxW - 60;
-            while (ctx.measureText(name).width > maxNameWidth && fontSize > 24) {
+            ctx.font = `700 ${fontSize}px "Playfair Display", serif`;
+
+            while (ctx.measureText(name).width > maxNameWidth && fontSize > 18) {
               fontSize -= 2;
-              ctx.font = `400 ${fontSize}px "Great Vibes", cursive`;
+              ctx.font = `700 ${fontSize}px "Playfair Display", serif`;
             }
+            ctx.fillStyle = '#FFFFFF';
             ctx.fillText(name, W / 2, guestNameY);
 
             // Subtext
@@ -1240,10 +1272,22 @@ Salam hangat,
       }
 
       // =============================================
-      // GET QR CANVAS (dari preview)
+      // GET QR CANVAS
       // =============================================
       function getQRCanvas() {
         return qrcodeDiv.querySelector('canvas');
+      }
+
+      // =============================================
+      // DOWNLOAD HELPER
+      // =============================================
+      function triggerDownload(dataURL, filename) {
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = dataURL;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
 
       // =============================================
@@ -1254,29 +1298,20 @@ Salam hangat,
 
         if (!qrCanvas) {
           showToast('QR Code belum siap, coba lagi', 'error');
-          return;
+          return null;
         }
 
-        // Pastikan font sudah ter-load
         try {
           await document.fonts.ready;
         } catch (e) { /* ignore */ }
 
-        // Delay kecil agar font Playfair & Great Vibes pasti siap render
         await new Promise(r => setTimeout(r, 150));
 
         try {
           const dataURL = await generateInvitationImage(guestName, qrCanvas);
           lastGeneratedImage = dataURL;
 
-          // Trigger download
-          const safeName = guestName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-          const link = document.createElement('a');
-          link.download = `undangan-${safeName}.png`;
-          link.href = dataURL;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+          triggerDownload(dataURL, buildImageFileName(guestName));
 
           if (openModal) {
             modalImage.src = dataURL;
@@ -1284,9 +1319,11 @@ Salam hangat,
           }
 
           showToast('Gambar undangan berhasil dibuat & diunduh!', 'success');
+          return dataURL;
         } catch (err) {
           console.error(err);
           showToast('Gagal membuat gambar undangan', 'error');
+          return null;
         }
       }
 
@@ -1339,13 +1376,7 @@ Salam hangat,
         
         try {
           const dataURL = downloadCanvas.toDataURL('image/png');
-          const link = document.createElement('a');
-          const safeName = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-          link.download = `qr-undangan-${safeName}.png`;
-          link.href = dataURL;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+          triggerDownload(dataURL, `qr-undangan-${name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`);
           showToast('QR Code berhasil diunduh!', 'success');
         } catch (e) {
           showToast('Gagal mengunduh QR Code', 'error');
@@ -1549,7 +1580,6 @@ Salam hangat,
         btnShareImage.disabled = true;
 
         try {
-          // Generate + buka modal preview (TIDAK auto download di sini)
           const qrCanvas = getQRCanvas();
           try { await document.fonts.ready; } catch(e) {}
           await new Promise(r => setTimeout(r, 150));
@@ -1578,45 +1608,109 @@ Salam hangat,
       });
 
       // =============================================
-      // SEND WHATSAPP + AUTO-GENERATE & DOWNLOAD GAMBAR
+      // CEK DUKUNGAN WEB SHARE API UNTUK FILE
+      // =============================================
+      function canShareFiles(file) {
+        if (!navigator.canShare || !navigator.share) return false;
+        try {
+          return navigator.canShare({ files: [file] });
+        } catch (e) {
+          return false;
+        }
+      }
+
+      // =============================================
+      // SEND WHATSAPP (dengan Web Share API + fallback)
       // =============================================
       async function sendWhatsApp(guest) {
-        // 1. Generate & download gambar undangan dulu
-        showToast('Membuat gambar undangan...', 'success');
-
-        // Pastikan QR ada
+        // Pastikan guest yang aktif sudah di-load ke preview
         if (guest !== currentGuest) {
           loadGuestToPreview(guest);
-          await new Promise(r => setTimeout(r, 350));
+          await new Promise(r => setTimeout(r, 400));
+        }
+
+        const qrCanvas = getQRCanvas();
+        if (!qrCanvas) {
+          showToast('QR Code belum siap, coba lagi', 'error');
+          return;
+        }
+
+        // Loading state pada tombol (jika dari tombol utama)
+        const isFromMainBtn = (guest === currentGuest);
+        let originalHTML = '';
+        if (isFromMainBtn) {
+          originalHTML = btnWhatsapp.innerHTML;
+          btnWhatsapp.innerHTML = '<div class="spinner"></div><span>Menyiapkan...</span>';
+          btnWhatsapp.disabled = true;
         }
 
         try {
-          await buildAndDownloadInvitation(guest.name);
-        } catch (e) {
-          console.warn('Gagal generate gambar:', e);
-        }
+          // ---------- 1. Siapkan font ----------
+          try { await document.fonts.ready; } catch (e) {}
+          await new Promise(r => setTimeout(r, 150));
 
-        // 2. Baru buka WhatsApp
-        const link = buildGuestLink(guest.name);
-        const message = buildWhatsAppMessage(guest.name, link);
-        const encodedMsg = encodeURIComponent(message);
+          // ---------- 2. Generate gambar ----------
+          const dataURL = await generateInvitationImage(guest.name, qrCanvas);
+          lastGeneratedImage = dataURL;
 
-        let waUrl;
-        if (guest.phone) {
-          const phone = formatPhoneNumber(guest.phone);
-          waUrl = `https://wa.me/${phone}?text=${encodedMsg}`;
-        } else {
-          waUrl = `https://wa.me/?text=${encodedMsg}`;
-        }
+          // ---------- 3. Siapkan pesan + link ----------
+          const link = buildGuestLink(guest.name);
+          const message = buildWhatsAppMessage(guest.name, link);
 
-        // Delay sedikit agar download tidak tabrakan dengan open WhatsApp
-        setTimeout(() => {
-          window.open(waUrl, '_blank');
-          // Info ke user
+          // ---------- 4. Convert ke File ----------
+          const fileName = buildImageFileName(guest.name);
+          const imageFile = dataURLtoFile(dataURL, fileName);
+
+          // ---------- 5. Coba Web Share API (HP) ----------
+          if (canShareFiles(imageFile)) {
+            try {
+              await navigator.share({
+                files: [imageFile],
+                text: message,
+                title: `Undangan Pernikahan - ${guest.name}`
+              });
+              showToast('Berhasil dibagikan!', 'success');
+              return;
+            } catch (err) {
+              // User batal share — tidak perlu error
+              if (err && err.name === 'AbortError') {
+                return;
+              }
+              // Jika error lain, lanjut ke fallback
+              console.warn('Web Share gagal, fallback ke cara manual:', err);
+            }
+          }
+
+          // ---------- 6. Fallback (Desktop / browser tidak support) ----------
+          // 6a. Download gambar otomatis
+          triggerDownload(dataURL, fileName);
+
+          // 6b. Buka WhatsApp dengan teks
+          const encodedMsg = encodeURIComponent(message);
+          let waUrl;
+          if (guest.phone) {
+            const phone = formatPhoneNumber(guest.phone);
+            waUrl = `https://wa.me/${phone}?text=${encodedMsg}`;
+          } else {
+            waUrl = `https://wa.me/?text=${encodedMsg}`;
+          }
+
           setTimeout(() => {
-            showToast('Gambar sudah terunduh. Silakan attach di WhatsApp.', 'success');
-          }, 800);
-        }, 300);
+            window.open(waUrl, '_blank');
+            setTimeout(() => {
+              showToast('Gambar sudah terunduh. Silakan attach di WhatsApp.', 'success');
+            }, 800);
+          }, 300);
+
+        } catch (err) {
+          console.error(err);
+          showToast('Gagal menyiapkan undangan', 'error');
+        } finally {
+          if (isFromMainBtn) {
+            btnWhatsapp.innerHTML = originalHTML;
+            btnWhatsapp.disabled = false;
+          }
+        }
       }
 
       btnWhatsapp.addEventListener('click', function() {
