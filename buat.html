@@ -14,6 +14,7 @@
             'batak': ['"Cormorant Garamond"', 'serif'],
             'sans': ['"Inter"', 'sans-serif'],
             'script': ['"Great Vibes"', 'cursive'],
+            'playfair': ['"Playfair Display"', 'serif'],
           },
           colors: {
             'batak-gold': '#C49A6C',
@@ -28,7 +29,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <!-- QRCode.js -->
@@ -85,6 +86,11 @@
     .btn-primary:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 25px -5px rgba(139, 58, 58, 0.4);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
     .btn-secondary {
       background: rgba(196, 154, 108, 0.15);
@@ -297,7 +303,6 @@
     }
     .toggle-password:hover { color: #8B3A3A; }
 
-    /* Shake animation */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-10px); }
@@ -305,14 +310,12 @@
     }
     .shake { animation: shake 0.5s ease; }
 
-    /* Fade in dashboard */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
     .dashboard-enter { animation: fadeIn 0.6s ease forwards; }
 
-    /* Logout button */
     .btn-logout {
       background: rgba(139, 58, 58, 0.1);
       color: #8B3A3A;
@@ -332,6 +335,48 @@
       color: white;
       border-color: #8B3A3A;
     }
+
+    /* Modal preview gambar undangan */
+    #image-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      background: rgba(45, 27, 19, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(6px);
+    }
+    #image-modal.show {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+    #image-modal img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 16px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      border: 3px solid #C49A6C;
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      color: #8B3A3A;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    .modal-close:hover { background: #8B3A3A; color: white; transform: rotate(90deg); }
   </style>
 </head>
 <body class="text-batak-deep antialiased">
@@ -383,6 +428,12 @@
     </div>
   </div>
 
+  <!-- Modal Preview Gambar Undangan -->
+  <div id="image-modal">
+    <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+    <img id="modal-image" src="" alt="Preview Undangan">
+  </div>
+
   <!-- Toast -->
   <div id="toast">
     <i class="fas fa-check-circle" id="toast-icon"></i>
@@ -394,7 +445,6 @@
 
     <!-- Header -->
     <header class="py-8 px-6 relative">
-      <!-- Logout Button -->
       <div class="absolute top-4 right-4 md:top-6 md:right-6">
         <button id="btn-logout" class="btn-logout" title="Keluar dari dashboard">
           <i class="fas fa-sign-out-alt"></i>
@@ -423,9 +473,9 @@
             <p class="font-semibold mb-1">Cara Penggunaan:</p>
             <ol class="list-decimal list-inside space-y-1 text-xs text-batak-deep/70">
               <li>Masukkan nama tamu pada form di bawah, lalu klik <b>"Generate Link"</b>.</li>
-              <li>Setelah link muncul, klik <b>"Kirim WhatsApp"</b> untuk otomatis membuka WhatsApp dengan pesan undangan yang siap dikirim.</li>
-              <li>Klik <b>"Download QR"</b> untuk mengunduh QR Code yang bisa dicetak / dibagikan ke tamu.</li>
-              <li>Tamu yang scan QR akan langsung dibawa ke undangan dengan namanya sudah tertulis.</li>
+              <li>Setelah link muncul, klik <b>"Kirim WhatsApp + Gambar"</b> untuk otomatis mengunduh gambar undangan & membuka WhatsApp.</li>
+              <li>Di WhatsApp, <b>attach gambar</b> yang baru saja terunduh, lalu kirim.</li>
+              <li>Klik <b>"Download QR"</b> untuk mengunduh QR Code saja (tanpa kartu undangan).</li>
             </ol>
           </div>
         </div>
@@ -465,7 +515,7 @@
                 </label>
                 <input type="tel" id="input-phone" class="form-input" placeholder="Contoh: 08123456789">
                 <p class="text-xs text-batak-deep/40 mt-1">
-                  <i class="fas fa-info-circle mr-1"></i>Jika diisi, tombol "Kirim WhatsApp" akan langsung ke nomor ini.
+                  <i class="fas fa-info-circle mr-1"></i>Jika diisi, WhatsApp akan langsung ke nomor ini.
                 </p>
               </div>
 
@@ -517,15 +567,21 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="grid grid-cols-2 gap-3 mt-4">
-              <button id="btn-whatsapp" class="btn-primary">
-                <i class="fab fa-whatsapp"></i>
-                <span>Kirim WhatsApp</span>
+            <div class="grid grid-cols-1 gap-3 mt-4">
+              <button id="btn-share-image" class="btn-primary">
+                <i class="fas fa-image"></i>
+                <span>Preview Gambar Undangan</span>
               </button>
-              <button id="btn-download-qr" class="btn-secondary">
-                <i class="fas fa-download"></i>
-                <span>Download QR</span>
-              </button>
+              <div class="grid grid-cols-2 gap-3">
+                <button id="btn-whatsapp" class="btn-primary">
+                  <i class="fab fa-whatsapp"></i>
+                  <span>Kirim WhatsApp</span>
+                </button>
+                <button id="btn-download-qr" class="btn-secondary">
+                  <i class="fas fa-download"></i>
+                  <span>Download QR</span>
+                </button>
+              </div>
             </div>
 
             <!-- WhatsApp Message Preview -->
@@ -625,14 +681,23 @@
       // 🔐 PASSWORD DASHBOARD — GANTI DI SINI
       const DASHBOARD_PASSWORD = 'JA2026';
 
-      // Base URL tetap — tidak dapat diubah oleh user
+      // Base URL tetap
       const DEFAULT_BASE_URL = 'https://jefrianiwedding.undangandigitalpro.my.id/';
+
+      // Info undangan (dipakai untuk gambar)
+      const WEDDING_INFO = {
+        groom: 'Jefri Andi Purba',
+        bride: 'Ani Novita Br Damanik',
+        date: "Jum'at, 09 Oktober 2026",
+        location: 'Silapu, Desa Marubun, Kec. Sipispis',
+      };
 
       // =============================================
       // STATE
       // =============================================
       let guests = [];
       let currentGuest = null;
+      let lastGeneratedImage = null; // dataURL gambar undangan
 
       // =============================================
       // DOM: LOGIN
@@ -658,6 +723,7 @@
       const previewName = document.getElementById('preview-name');
       const outputLink = document.getElementById('output-link');
       const btnCopyLink = document.getElementById('btn-copy-link');
+      const btnShareImage = document.getElementById('btn-share-image');
       const btnWhatsapp = document.getElementById('btn-whatsapp');
       const btnDownloadQr = document.getElementById('btn-download-qr');
       const waPreview = document.getElementById('wa-preview');
@@ -671,11 +737,14 @@
       const guestCount = document.getElementById('guest-count');
       const btnClearAll = document.getElementById('btn-clear-all');
 
+      // DOM: Modal
+      const imageModal = document.getElementById('image-modal');
+      const modalImage = document.getElementById('modal-image');
+      const modalClose = document.getElementById('modal-close');
+
       // =============================================
       // LOGIN LOGIC
       // =============================================
-
-      // Cek apakah sudah login sebelumnya (session)
       function isAuthenticated() {
         try {
           return sessionStorage.getItem(AUTH_KEY) === 'true';
@@ -698,8 +767,6 @@
         loginScreen.classList.add('hidden-login');
         dashboardWrapper.style.display = 'block';
         dashboardWrapper.classList.add('dashboard-enter');
-
-        // Init dashboard setelah login
         initDashboard();
       }
 
@@ -724,11 +791,9 @@
         }
 
         if (entered === DASHBOARD_PASSWORD) {
-          // Sukses
           setAuthenticated(true);
           loginError.classList.add('hidden');
 
-          // Loading state
           const originalHTML = btnLogin.innerHTML;
           btnLogin.innerHTML = '<div class="spinner"></div><span>Memverifikasi...</span>';
           btnLogin.disabled = true;
@@ -739,7 +804,6 @@
             showDashboard();
           }, 500);
         } else {
-          // Gagal
           loginErrorText.textContent = 'Password salah! Coba lagi.';
           loginError.classList.remove('hidden');
           triggerShake();
@@ -753,7 +817,6 @@
         setTimeout(() => loginCard.classList.remove('shake'), 500);
       }
 
-      // Toggle show/hide password
       btnTogglePassword.addEventListener('click', function() {
         const type = inputPassword.type === 'password' ? 'text' : 'password';
         inputPassword.type = type;
@@ -769,10 +832,8 @@
         inputPassword.focus();
       });
 
-      // Login button
       btnLogin.addEventListener('click', attemptLogin);
 
-      // Enter key on password
       inputPassword.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -780,14 +841,12 @@
         }
       });
 
-      // Clear error saat mulai mengetik
       inputPassword.addEventListener('input', function() {
         if (!loginError.classList.contains('hidden')) {
           loginError.classList.add('hidden');
         }
       });
 
-      // Logout button
       btnLogout.addEventListener('click', function() {
         if (confirm('Yakin ingin keluar dari dashboard?')) {
           setAuthenticated(false);
@@ -854,9 +913,9 @@
 
 Dengan penuh rasa syukur dan sukacita, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir di hari pernikahan kami:
 
-💍 *Jefri Andi Purba & Ani Novita Br Damanik*
-📅 Jum'at, 09 Oktober 2026
-📍 Silapu, Desa Marubun, Kec. Sipispis
+💍 *${WEDDING_INFO.groom} & ${WEDDING_INFO.bride}*
+📅 ${WEDDING_INFO.date}
+📍 ${WEDDING_INFO.location}
 
 Berikut link undangan digital kami untuk Anda:
 ${link}
@@ -870,7 +929,7 @@ Salam hangat,
       }
 
       // =============================================
-      // HELPER: Format phone number
+      // HELPER: Format phone
       // =============================================
       function formatPhoneNumber(phone) {
         if (!phone) return '';
@@ -884,7 +943,280 @@ Salam hangat,
       }
 
       // =============================================
-      // QR CODE GENERATOR
+      // HELPER: Wrap text on canvas
+      // =============================================
+      function wrapText(ctx, text, maxWidth) {
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = '';
+
+        for (let word of words) {
+          const testLine = currentLine ? currentLine + ' ' + word : word;
+          const metrics = ctx.measureText(testLine);
+          if (metrics.width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = testLine;
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+        return lines;
+      }
+
+      // =============================================
+      // GENERATE UNDANGAN IMAGE (KARTU PREMIUM)
+      // =============================================
+      function generateInvitationImage(name, qrCanvas) {
+        return new Promise((resolve, reject) => {
+          try {
+            const W = 800;
+            const H = 1200;
+            const canvas = document.createElement('canvas');
+            canvas.width = W;
+            canvas.height = H;
+            const ctx = canvas.getContext('2d');
+
+            // ---------- Background gradient ----------
+            const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+            bgGrad.addColorStop(0, '#2D1B13');
+            bgGrad.addColorStop(0.5, '#4A2E20');
+            bgGrad.addColorStop(1, '#2D1B13');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, W, H);
+
+            // ---------- Radial glow kanan atas ----------
+            const glow1 = ctx.createRadialGradient(W - 100, 150, 0, W - 100, 150, 500);
+            glow1.addColorStop(0, 'rgba(196, 154, 108, 0.28)');
+            glow1.addColorStop(1, 'rgba(196, 154, 108, 0)');
+            ctx.fillStyle = glow1;
+            ctx.fillRect(0, 0, W, H);
+
+            // ---------- Radial glow kiri bawah ----------
+            const glow2 = ctx.createRadialGradient(100, H - 150, 0, 100, H - 150, 500);
+            glow2.addColorStop(0, 'rgba(139, 58, 58, 0.28)');
+            glow2.addColorStop(1, 'rgba(139, 58, 58, 0)');
+            ctx.fillStyle = glow2;
+            ctx.fillRect(0, 0, W, H);
+
+            // ---------- Border emas luar ----------
+            ctx.strokeStyle = '#C49A6C';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(28, 28, W - 56, H - 56);
+
+            // ---------- Border emas dalam ----------
+            ctx.strokeStyle = 'rgba(196, 154, 108, 0.5)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(44, 44, W - 88, H - 88);
+
+            // ---------- Ornamen sudut (4 sudut) ----------
+            function drawCorner(x, y, flipX, flipY) {
+              ctx.save();
+              ctx.translate(x, y);
+              ctx.scale(flipX, flipY);
+              ctx.strokeStyle = '#C49A6C';
+              ctx.lineWidth = 2.5;
+              ctx.beginPath();
+              ctx.moveTo(0, 40);
+              ctx.lineTo(0, 0);
+              ctx.lineTo(40, 0);
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.arc(0, 0, 12, 0, Math.PI / 2);
+              ctx.stroke();
+              ctx.restore();
+            }
+            drawCorner(60, 60, 1, 1);
+            drawCorner(W - 60, 60, -1, 1);
+            drawCorner(60, H - 60, 1, -1);
+            drawCorner(W - 60, H - 60, -1, -1);
+
+            // ============================================
+            // TEXT CONTENT (y-coordinate tracker)
+            // ============================================
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            let y = 130;
+
+            // ---------- "UNDANGAN PERNIKAHAN" ----------
+            ctx.font = '600 16px "Playfair Display", serif';
+            ctx.fillStyle = '#C49A6C';
+            ctx.letterSpacing = '8px';
+            ctx.fillText('UNDANGAN PERNIKAHAN', W / 2, y);
+            ctx.letterSpacing = '0px';
+
+            // ---------- Ornamen curve ----------
+            y += 40;
+            ctx.strokeStyle = 'rgba(196, 154, 108, 0.6)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(W / 2 - 120, y);
+            ctx.quadraticCurveTo(W / 2, y - 12, W / 2 + 120, y);
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(139, 58, 58, 0.5)';
+            ctx.beginPath();
+            ctx.moveTo(W / 2 - 90, y + 8);
+            ctx.quadraticCurveTo(W / 2, y - 4, W / 2 + 90, y + 8);
+            ctx.stroke();
+
+            // ---------- "The Wedding of" ----------
+            y += 70;
+            ctx.font = 'italic 400 22px "Playfair Display", serif';
+            ctx.fillStyle = 'rgba(196, 154, 108, 0.8)';
+            ctx.fillText('The Wedding of', W / 2, y);
+
+            // ---------- Nama Pengantin (SCRIPT) ----------
+            y += 80;
+            ctx.font = '400 84px "Great Vibes", cursive';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.shadowColor = 'rgba(196, 154, 108, 0.5)';
+            ctx.shadowBlur = 20;
+            ctx.fillText(WEDDING_INFO.groom, W / 2, y);
+            ctx.shadowBlur = 0;
+
+            // Ampersand
+            y += 70;
+            ctx.font = '400 56px "Great Vibes", cursive';
+            ctx.fillStyle = '#C49A6C';
+            ctx.fillText('&', W / 2, y);
+
+            y += 70;
+            ctx.font = '400 84px "Great Vibes", cursive';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.shadowColor = 'rgba(196, 154, 108, 0.5)';
+            ctx.shadowBlur = 20;
+            ctx.fillText(WEDDING_INFO.bride, W / 2, y);
+            ctx.shadowBlur = 0;
+
+            // ---------- Ornamen divider ----------
+            y += 60;
+            ctx.strokeStyle = 'rgba(196, 154, 108, 0.6)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(W / 2 - 120, y);
+            ctx.quadraticCurveTo(W / 2, y - 12, W / 2 + 120, y);
+            ctx.stroke();
+
+            // ============================================
+            // BOX UNTUK TAMU (UNDANGAN UNTUK)
+            // ============================================
+            y += 60;
+            const boxY = y;
+            const boxH = 150;
+            const boxW = 560;
+            const boxX = (W - boxW) / 2;
+
+            // Box bg semi transparan
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+            ctx.strokeStyle = 'rgba(196, 154, 108, 0.6)';
+            ctx.lineWidth = 1.5;
+            roundRect(ctx, boxX, boxY, boxW, boxH, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            // Label "UNDANGAN UNTUK"
+            ctx.font = '500 13px "Playfair Display", serif';
+            ctx.fillStyle = '#C49A6C';
+            ctx.letterSpacing = '5px';
+            ctx.fillText('UNDANGAN UNTUK', W / 2, boxY + 32);
+            ctx.letterSpacing = '0px';
+
+            // Nama tamu (SCRIPT BESAR)
+            const guestNameY = boxY + 88;
+            ctx.font = '400 52px "Great Vibes", cursive';
+            ctx.fillStyle = '#FFFFFF';
+
+            // Auto-shrink jika nama panjang
+            let fontSize = 52;
+            const maxNameWidth = boxW - 60;
+            while (ctx.measureText(name).width > maxNameWidth && fontSize > 24) {
+              fontSize -= 2;
+              ctx.font = `400 ${fontSize}px "Great Vibes", cursive`;
+            }
+            ctx.fillText(name, W / 2, guestNameY);
+
+            // Subtext
+            ctx.font = 'italic 400 14px "Playfair Display", serif';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+            ctx.fillText('Tanpa mengurangi rasa hormat, kami mengundang Anda', W / 2, boxY + 128);
+
+            // ============================================
+            // TANGGAL & LOKASI
+            // ============================================
+            y = boxY + boxH + 60;
+
+            // Tanggal
+            ctx.font = '600 24px "Inter", sans-serif';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(WEDDING_INFO.date, W / 2, y);
+
+            y += 40;
+            ctx.font = '400 16px "Inter", sans-serif';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+            ctx.fillText(WEDDING_INFO.location, W / 2, y);
+
+            // ============================================
+            // QR CODE
+            // ============================================
+            y += 70;
+            const qrSize = 180;
+            const qrX = (W - qrSize) / 2;
+            const qrY = y;
+
+            // QR background box
+            ctx.fillStyle = '#FFFFFF';
+            roundRect(ctx, qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 12);
+            ctx.fill();
+
+            // Draw QR
+            if (qrCanvas) {
+              ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+            }
+
+            // Label QR
+            y = qrY + qrSize + 30;
+            ctx.font = '500 13px "Inter", sans-serif';
+            ctx.fillStyle = 'rgba(196, 154, 108, 0.9)';
+            ctx.fillText('Scan QR untuk membuka undangan digital', W / 2, y);
+
+            // ============================================
+            // FOOTER
+            // ============================================
+            y = H - 80;
+            ctx.font = 'italic 400 14px "Playfair Display", serif';
+            ctx.fillStyle = 'rgba(196, 154, 108, 0.7)';
+            ctx.fillText('Merupakan suatu kehormatan & kebahagiaan apabila', W / 2, y);
+            ctx.fillText('Bapak/Ibu/Saudara/i berkenan hadir memberikan doa restu', W / 2, y + 22);
+
+            // Convert
+            const dataURL = canvas.toDataURL('image/png');
+            resolve(dataURL);
+
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+
+      // Helper: rounded rect
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      }
+
+      // =============================================
+      // QR CODE GENERATOR (untuk preview halaman)
       // =============================================
       function generateQR(link) {
         qrcodeDiv.innerHTML = '';
@@ -908,7 +1240,58 @@ Salam hangat,
       }
 
       // =============================================
-      // DOWNLOAD QR
+      // GET QR CANVAS (dari preview)
+      // =============================================
+      function getQRCanvas() {
+        return qrcodeDiv.querySelector('canvas');
+      }
+
+      // =============================================
+      // BUILD UNDANGAN IMAGE & DOWNLOAD
+      // =============================================
+      async function buildAndDownloadInvitation(guestName, { openModal = false } = {}) {
+        const qrCanvas = getQRCanvas();
+
+        if (!qrCanvas) {
+          showToast('QR Code belum siap, coba lagi', 'error');
+          return;
+        }
+
+        // Pastikan font sudah ter-load
+        try {
+          await document.fonts.ready;
+        } catch (e) { /* ignore */ }
+
+        // Delay kecil agar font Playfair & Great Vibes pasti siap render
+        await new Promise(r => setTimeout(r, 150));
+
+        try {
+          const dataURL = await generateInvitationImage(guestName, qrCanvas);
+          lastGeneratedImage = dataURL;
+
+          // Trigger download
+          const safeName = guestName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+          const link = document.createElement('a');
+          link.download = `undangan-${safeName}.png`;
+          link.href = dataURL;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          if (openModal) {
+            modalImage.src = dataURL;
+            imageModal.classList.add('show');
+          }
+
+          showToast('Gambar undangan berhasil dibuat & diunduh!', 'success');
+        } catch (err) {
+          console.error(err);
+          showToast('Gagal membuat gambar undangan', 'error');
+        }
+      }
+
+      // =============================================
+      // DOWNLOAD QR SAJA
       // =============================================
       function downloadQR(name) {
         const canvas = qrcodeDiv.querySelector('canvas');
@@ -943,7 +1326,7 @@ Salam hangat,
         ctx.drawImage(sourceCanvas, padding, padding, qrSize, qrSize);
         
         ctx.fillStyle = '#2D1B13';
-        ctx.font = 'bold 20px "Cormorant Garamond", serif';
+        ctx.font = 'bold 22px "Playfair Display", serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
@@ -952,7 +1335,7 @@ Salam hangat,
         
         ctx.font = '13px "Inter", sans-serif';
         ctx.fillStyle = '#C49A6C';
-        ctx.fillText('Undangan Digital · Jefri Purba & Ani Br Damanik · 09.10.2026', downloadCanvas.width / 2, labelY + 26);
+        ctx.fillText('Undangan Digital · Jefri & Ani · 09.10.2026', downloadCanvas.width / 2, labelY + 28);
         
         try {
           const dataURL = downloadCanvas.toDataURL('image/png');
@@ -1153,13 +1536,71 @@ Salam hangat,
       }
 
       // =============================================
-      // SEND WHATSAPP
+      // PREVIEW GAMBAR UNDANGAN
       // =============================================
-      function sendWhatsApp(guest) {
+      btnShareImage.addEventListener('click', async function() {
+        if (!currentGuest) {
+          showToast('Generate link terlebih dahulu', 'error');
+          return;
+        }
+
+        const originalHTML = btnShareImage.innerHTML;
+        btnShareImage.innerHTML = '<div class="spinner"></div><span>Membuat gambar...</span>';
+        btnShareImage.disabled = true;
+
+        try {
+          // Generate + buka modal preview (TIDAK auto download di sini)
+          const qrCanvas = getQRCanvas();
+          try { await document.fonts.ready; } catch(e) {}
+          await new Promise(r => setTimeout(r, 150));
+
+          const dataURL = await generateInvitationImage(currentGuest.name, qrCanvas);
+          lastGeneratedImage = dataURL;
+
+          modalImage.src = dataURL;
+          imageModal.classList.add('show');
+        } catch (err) {
+          console.error(err);
+          showToast('Gagal membuat gambar undangan', 'error');
+        } finally {
+          btnShareImage.innerHTML = originalHTML;
+          btnShareImage.disabled = false;
+        }
+      });
+
+      // Close modal
+      modalClose.addEventListener('click', () => imageModal.classList.remove('show'));
+      imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) imageModal.classList.remove('show');
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') imageModal.classList.remove('show');
+      });
+
+      // =============================================
+      // SEND WHATSAPP + AUTO-GENERATE & DOWNLOAD GAMBAR
+      // =============================================
+      async function sendWhatsApp(guest) {
+        // 1. Generate & download gambar undangan dulu
+        showToast('Membuat gambar undangan...', 'success');
+
+        // Pastikan QR ada
+        if (guest !== currentGuest) {
+          loadGuestToPreview(guest);
+          await new Promise(r => setTimeout(r, 350));
+        }
+
+        try {
+          await buildAndDownloadInvitation(guest.name);
+        } catch (e) {
+          console.warn('Gagal generate gambar:', e);
+        }
+
+        // 2. Baru buka WhatsApp
         const link = buildGuestLink(guest.name);
         const message = buildWhatsAppMessage(guest.name, link);
         const encodedMsg = encodeURIComponent(message);
-        
+
         let waUrl;
         if (guest.phone) {
           const phone = formatPhoneNumber(guest.phone);
@@ -1167,8 +1608,15 @@ Salam hangat,
         } else {
           waUrl = `https://wa.me/?text=${encodedMsg}`;
         }
-        
-        window.open(waUrl, '_blank');
+
+        // Delay sedikit agar download tidak tabrakan dengan open WhatsApp
+        setTimeout(() => {
+          window.open(waUrl, '_blank');
+          // Info ke user
+          setTimeout(() => {
+            showToast('Gambar sudah terunduh. Silakan attach di WhatsApp.', 'success');
+          }, 800);
+        }, 300);
       }
 
       btnWhatsapp.addEventListener('click', function() {
@@ -1177,7 +1625,7 @@ Salam hangat,
       });
 
       // =============================================
-      // DOWNLOAD QR
+      // DOWNLOAD QR (hanya QR)
       // =============================================
       btnDownloadQr.addEventListener('click', function() {
         if (!currentGuest) {
@@ -1205,16 +1653,14 @@ Salam hangat,
       });
 
       // =============================================
-      // DASHBOARD INIT (dipanggil setelah login)
+      // DASHBOARD INIT
       // =============================================
       let dashboardInitialized = false;
       function initDashboard() {
-        // Set base URL terkunci
         inputBaseUrl.value = DEFAULT_BASE_URL;
         inputBaseUrl.setAttribute('readonly', 'readonly');
         inputBaseUrl.setAttribute('aria-readonly', 'true');
 
-        // Load guests hanya sekali
         if (!dashboardInitialized) {
           loadGuests();
           renderGuestList();
